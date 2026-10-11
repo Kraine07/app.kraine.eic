@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title th:text="'Error' + (${status} != null ? ' ' + ${status} : '')">Error</title>
+  <style th:replace="~{dashboard :: styles}"></style>
+  <style>
+    body { min-height: 100vh; display: flex; flex-direction: column; }
+    .brandbar { padding: .75rem 1.5rem; background: #fff; border-bottom: 1px solid var(--line); font-weight: 700; }
+    main.error-page { max-width: none; margin: 0; flex: 1; display: flex; align-items: center;
+                      justify-content: center; padding: 2rem 1rem; }
+    .error-card { width: 100%; max-width: 34rem; }
+    .error-code { font-size: 4.5rem; font-weight: 800; line-height: 1; margin: 0 0 .5rem; color: var(--muted); }
+    .error-card h1 { margin: 0 0 .5rem; }
+    .error-card p { margin: 0 0 1.5rem; line-height: 1.5; }
+    .error-actions { display: flex; flex-wrap: wrap; gap: .75rem; }
+    details { margin-top: 1.75rem; color: var(--muted); font-size: .9rem; }
+    summary { cursor: pointer; }
+    dl { display: grid; grid-template-columns: max-content 1fr; gap: .25rem 1rem; margin: .75rem 0 0; }
+    dt { font-weight: 600; }
+    dd { margin: 0; overflow-wrap: anywhere; }
+  </style>
+</head>
+<body>
+<div class="brandbar">Equipment Inventory</div>
+
+<main class="error-page">
+  <section class="panel error-card" aria-labelledby="errorTitle">
+    <p class="error-code" th:if="${status != null}" th:text="${status}" aria-hidden="true">404</p>
+
+    <!-- Plain-language message for the usual cases. Internal messages and stack traces are never shown. -->
+    <th:block th:switch="${status}">
+      <th:block th:case="400">
+        <h1 id="errorTitle">Bad request</h1>
+        <p>The request could not be understood. Go back, check what you entered and try again.</p>
+      </th:block>
+      <th:block th:case="401">
+        <h1 id="errorTitle">Sign in required</h1>
+        <p>You need to sign in to see this page.</p>
+      </th:block>
+      <th:block th:case="403">
+        <h1 id="errorTitle">Access denied</h1>
+        <p>Your account does not have permission to open this page. If you think it should, ask an Administrator.</p>
+      </th:block>
+      <th:block th:case="404">
+        <h1 id="errorTitle">Page not found</h1>
+        <p>The page you are looking for does not exist or has been moved.</p>
+      </th:block>
+      <th:block th:case="405">
+        <h1 id="errorTitle">Action not allowed</h1>
+        <p>That action is not available on this page.</p>
+      </th:block>
+      <th:block th:case="413">
+        <h1 id="errorTitle">File too large</h1>
+        <p>The file you sent is larger than the server accepts. Choose a smaller file and try again.</p>
+      </th:block>
+      <th:block th:case="*">
+        <h1 id="errorTitle">Something went wrong</h1>
+        <p>An unexpected error occurred. Try again in a moment. If it keeps happening, contact an Administrator.</p>
+      </th:block>
+    </th:block>
+
+    <div class="error-actions">
+      <!-- Signed-in users land in the app; anyone else is sent on to the sign-in page. -->
+      <a class="button" th:href="@{/equipment}">Back to Equipment Inventory</a>
+      <button type="button" class="secondary" id="goBack" hidden>Go back</button>
+    </div>
+
+    <details th:if="${status != null or path != null}">
+      <summary>Technical details</summary>
+      <dl>
+        <dt th:if="${status != null}">Status</dt>
+        <dd th:if="${status != null}" th:text="${status} + (${error} != null ? ' ' + ${error} : '')">404 Not Found</dd>
+        <dt th:if="${path != null}">Page</dt>
+        <dd th:if="${path != null}" th:text="${path}">/example</dd>
+        <dt th:if="${timestamp != null}">Time</dt>
+        <dd th:if="${timestamp != null}" th:text="${#dates.format(timestamp, 'yyyy-MM-dd HH:mm:ss')}">2026-01-01 12:00:00</dd>
+      </dl>
+    </details>
+  </section>
+</main>
+
+<script>
+  // Offer "Go back" only when there is somewhere to go back to.
+  var back = document.getElementById('goBack');
+  if (window.history.length > 1) {
+    back.hidden = false;
+    back.addEventListener('click', function () { window.history.back(); });
+  }
+</script>
+</body>
+</html>

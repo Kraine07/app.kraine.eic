@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Set up Equipment Inventory</title>
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 0; color: #1b1f24; background: #f6f7f9; }
+    main { max-width: 34rem; margin: 3rem auto; padding: 0 1rem; }
+    form { background: #fff; border: 1px solid #d5d9df; border-radius: 6px; padding: 1.5rem; }
+    .field { margin-bottom: 1rem; }
+    label { display: block; font-weight: 600; margin-bottom: .35rem; }
+    input[type=text], input[type=email], input[type=password] {
+      width: 100%; box-sizing: border-box; padding: .55rem .65rem; font-size: 1rem;
+      border: 1px solid #8a93a0; border-radius: 4px; }
+    input.invalid { border-color: #c62828; background: #fdf3f2; }
+    .error { color: #b3261e; font-size: .9rem; margin: .3rem 0 0; }
+    .role { margin: 0; padding: .55rem .65rem; background: #eef1f4; border-radius: 4px; }
+    .hint { color: #4a5360; margin: 0 0 1.25rem; }
+    button { background: #0b5cad; color: #fff; border: 0; border-radius: 4px;
+             padding: .6rem 1.25rem; font-size: 1rem; cursor: pointer; }
+    button:focus-visible, input:focus-visible { outline: 3px solid #f2b300; outline-offset: 2px; }
+  </style>
+</head>
+<body>
+<main>
+  <h1>Set up Equipment Inventory</h1>
+  <p class="hint">No user accounts exist yet. Create the first Administrator account to get started.</p>
+
+  <form th:action="@{/setup}" th:object="${setupForm}" method="post" novalidate>
+    <div class="field">
+      <label for="firstName">First name</label>
+      <input type="text" id="firstName" th:field="*{firstName}" autocomplete="given-name"
+             th:classappend="${#fields.hasErrors('firstName')} ? 'invalid'">
+      <p class="error" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></p>
+    </div>
+
+    <div class="field">
+      <label for="lastName">Last name</label>
+      <input type="text" id="lastName" th:field="*{lastName}" autocomplete="family-name"
+             th:classappend="${#fields.hasErrors('lastName')} ? 'invalid'">
+      <p class="error" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></p>
+    </div>
+
+    <div class="field">
+      <label for="email">Email</label>
+      <input type="email" id="email" th:field="*{email}" autocomplete="email"
+             th:classappend="${#fields.hasErrors('email')} ? 'invalid'">
+      <p class="error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
+    </div>
+
+    <div class="field">
+      <label>Role</label>
+      <p class="role">Administrator</p>
+    </div>
+
+    <div class="field">
+      <label for="password">Password</label>
+      <input type="password" id="password" th:field="*{password}" autocomplete="new-password"
+             th:classappend="${#fields.hasErrors('password')} ? 'invalid'">
+      <p class="error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></p>
+    </div>
+
+    <div class="field">
+      <label for="confirmPassword">Confirm password</label>
+      <input type="password" id="confirmPassword" th:field="*{confirmPassword}" autocomplete="new-password"
+             th:classappend="${#fields.hasErrors('confirmPassword')} ? 'invalid'">
+      <p class="error" th:if="${#fields.hasErrors('confirmPassword')}" th:errors="*{confirmPassword}"></p>
+    </div>
+
+    <button type="submit">Create User</button>
+  </form>
+</main>
+</body>
+</html>

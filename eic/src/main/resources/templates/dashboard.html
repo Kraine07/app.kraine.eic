@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head><title>Shared fragments</title></head>
+<body>
+
+<!-- Include in <head>:  <style th:replace="~{fragments/base :: styles}"></style> -->
+<style th:fragment="styles">
+  :root { --ink: #1b1f24; --muted: #4a5360; --line: #d5d9df; --bg: #f6f7f9; --brand: #0b5cad;
+          --danger: #b3261e; --ok: #1b6b2f; }
+  * { box-sizing: border-box; }
+  body { font-family: system-ui, sans-serif; margin: 0; color: var(--ink); background: var(--bg); }
+  .topbar { display: flex; align-items: center; gap: 1.5rem; padding: .75rem 1.5rem; background: #fff;
+            border-bottom: 1px solid var(--line); }
+  .topbar .brand { font-weight: 700; margin-right: auto; }
+  .topbar a { color: var(--ink); text-decoration: none; }
+  .topbar a:hover { text-decoration: underline; }
+  .topbar form { margin: 0; }
+  main { max-width: 64rem; margin: 2rem auto; padding: 0 1rem; }
+  h1 { margin: 0 0 1rem; }
+  .page-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+  .banner { padding: .75rem 1rem; border-radius: 6px; margin-bottom: 1rem; }
+  .banner.success { background: #e8f5e9; border: 1px solid var(--ok); color: #1b4d1f; }
+  .banner.error { background: #fdecea; border: 1px solid var(--danger); color: #7f1d1d; }
+  .banner.note { background: #fff8e1; border: 1px solid #b58900; color: #5c4400; }
+  .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
+  .card { background: #fff; border: 1px solid var(--line); border-radius: 6px; padding: 1rem; }
+  .card .value { font-size: 1.75rem; font-weight: 700; }
+  .card .label { color: var(--muted); }
+  table { width: 100%; border-collapse: collapse; background: #fff; border: 1px solid var(--line); }
+  th, td { text-align: left; padding: .65rem .75rem; border-bottom: 1px solid var(--line); }
+  th { background: #eef1f4; font-size: .9rem; }
+  .table-wrap { overflow-x: auto; }
+  .actions { display: flex; gap: .5rem; align-items: center; }
+  .badge { display: inline-block; padding: .15rem .55rem; border-radius: 999px; font-size: .85rem; }
+  .badge.active { background: #e8f5e9; color: #1b4d1f; }
+  .badge.suspended { background: #fdecea; color: #7f1d1d; }
+  button, .button { background: var(--brand); color: #fff; border: 0; border-radius: 4px; padding: .5rem 1rem;
+                    font-size: 1rem; cursor: pointer; text-decoration: none; display: inline-block; }
+  .secondary { background: #fff; color: var(--ink); border: 1px solid #8a93a0; }
+  .danger { background: var(--danger); }
+  .linklike { background: none; border: 0; color: var(--ink); padding: 0; text-decoration: underline; }
+  input[type=text], input[type=email], select { width: 100%; padding: .55rem .65rem; font-size: 1rem;
+          border: 1px solid #8a93a0; border-radius: 4px; background: #fff; }
+  input.invalid, select.invalid { border-color: var(--danger); background: #fdf3f2; }
+  .filter { max-width: 20rem; margin-bottom: 1rem; }
+  .field { margin-bottom: 1rem; }
+  label { display: block; font-weight: 600; margin-bottom: .35rem; }
+  .error { color: var(--danger); font-size: .9rem; margin: .3rem 0 0; }
+  .panel { background: #fff; border: 1px solid var(--line); border-radius: 6px; padding: 1.5rem; max-width: 34rem; }
+  .readonly { margin: 0; padding: .55rem .65rem; background: #eef1f4; border-radius: 4px; }
+  .form-actions { display: flex; gap: .75rem; margin-top: 1.5rem; }
+  .hint { color: var(--muted); }
+  dialog { border: 1px solid var(--line); border-radius: 8px; padding: 1.5rem; max-width: 26rem; }
+  dialog::backdrop { background: rgba(0, 0, 0, .4); }
+  dialog h2 { margin-top: 0; }
+  .dialog-actions { display: flex; justify-content: flex-end; gap: .75rem; margin-top: 1.25rem; }
+  button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible { outline: 3px solid #f2b300; outline-offset: 2px; }
+</style>
+
+<!-- Include at the top of <body>:  <header th:replace="~{fragments/base :: topbar}"></header> -->
+<header class="topbar" th:fragment="topbar">
+  <span class="brand">Equipment Inventory</span>
+  <nav aria-label="Main" style="display:flex; gap:1.25rem;">
+    <a th:href="@{/equipment}">Equipment</a>
+    <a th:href="@{/users}">Users</a>
+  </nav>
+  <form th:action="@{/logout}" method="post">
+    <button type="submit" class="linklike">Sign out</button>
+  </form>
+</header>
+
+<!-- Confirmation window (UC-04 step 5, UC-05 step 5, UC-06 step 3). Put once near the end of <body>. -->
+<dialog id="confirmDialog" th:fragment="confirmDialog" aria-labelledby="confirmTitle">
+  <h2 id="confirmTitle"></h2>
+  <p id="confirmMessage"></p>
+  <div class="dialog-actions">
+    <button type="button" class="secondary" id="confirmCancel">Cancel</button>
+    <button type="button" id="confirmOk">Confirm</button>
+  </div>
+</dialog>
+
+<!-- Buttons opt in with data-confirm-form (id of the form to submit), data-confirm-title,
+     data-confirm-message, data-confirm-label and, optionally, data-action (the URL to post to). -->
+<script th:fragment="confirmScript">
+  (function () {
+    var dialog = document.getElementById('confirmDialog');
+    var pending = null;
+    document.querySelectorAll('[data-confirm-form]').forEach(function (button) {
+      button.addEventListener('click', function () {
+        pending = button;
+        document.getElementById('confirmTitle').textContent = button.dataset.confirmTitle;
+        document.getElementById('confirmMessage').textContent = button.dataset.confirmMessage;
+        document.getElementById('confirmOk').textContent = button.dataset.confirmLabel || 'Confirm';
+        dialog.showModal();
+      });
+    });
+    document.getElementById('confirmCancel').addEventListener('click', function () {
+      dialog.close();
+      pending = null;
+    });
+    document.getElementById('confirmOk').addEventListener('click', function () {
+      if (!pending) { return; }
+      var form = document.getElementById(pending.dataset.confirmForm);
+      if (pending.dataset.action) { form.action = pending.dataset.action; }
+      form.submit();
+    });
+  })();
+</script>
+
+</body>
+</html>

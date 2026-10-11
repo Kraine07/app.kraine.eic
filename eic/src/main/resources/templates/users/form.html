@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title th:text="${editing} ? 'Edit User' : 'New User'">User</title>
+  <style th:replace="~{dashboard :: styles}"></style>
+</head>
+<body>
+<header th:replace="~{dashboard :: topbar}"></header>
+
+<main>
+  <h1 th:text="${editing} ? 'Edit User' : 'New User'">New User</h1>
+
+  <div class="banner error" role="alert" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+
+  <form class="panel" method="post" novalidate
+        th:action="${editing} ? @{/users/{id}(id=${userId})} : @{/users}" th:object="${userForm}">
+
+    <div class="field">
+      <label for="firstName">First name</label>
+      <input type="text" id="firstName" th:field="*{firstName}" autocomplete="off"
+             th:classappend="${#fields.hasErrors('firstName')} ? 'invalid'">
+      <p class="error" th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}"></p>
+    </div>
+
+    <div class="field">
+      <label for="lastName">Last name</label>
+      <input type="text" id="lastName" th:field="*{lastName}" autocomplete="off"
+             th:classappend="${#fields.hasErrors('lastName')} ? 'invalid'">
+      <p class="error" th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}"></p>
+    </div>
+
+    <div class="field">
+      <label for="email">Email</label>
+      <input type="email" id="email" th:field="*{email}" autocomplete="off"
+             th:classappend="${#fields.hasErrors('email')} ? 'invalid'">
+      <p class="error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></p>
+    </div>
+
+    <div class="field">
+      <label th:attr="for=${editing} ? null : 'roleType'">Role</label>
+      <input class="readonly" th:if="${editing}" th:value="${roleLabel}"  th:field="*{roleType}">
+      <th:block th:unless="${editing}">
+        <select id="roleType" th:field="*{roleType}" th:classappend="${#fields.hasErrors('roleType')} ? 'invalid'">
+          <option value="" hidden>Select a role</option>
+          <option th:each="r : ${roles}" th:value="${r.value()}" th:text="${r.value()}">Editor</option>
+        </select>
+        <p class="error" th:if="${#fields.hasErrors('roleType')}" th:errors="*{roleType}"></p>
+      </th:block>
+    </div>
+
+    <p class="hint" th:unless="${editing}">
+      A temporary password is generated and emailed to the user.
+    </p>
+
+    <div class="form-actions">
+      <button type="submit" th:text="${editing} ? 'Save' : 'Create User'">Create User</button>
+      <a class="button secondary" th:href="@{/users}">Cancel</a>
+    </div>
+  </form>
+
+  <!-- UC-04 / UC-05: suspend or activate from the edit form -->
+  <section class="panel" style="margin-top:1.5rem" th:if="${editing}" aria-labelledby="statusHeading">
+    <h2 id="statusHeading" style="margin-top:0">Account status</h2>
+    <p>
+      Status:
+      <span class="badge" th:classappend="${suspended} ? 'suspended' : 'active'"
+            th:text="${suspended} ? 'Suspended' : 'Active'">Active</span>
+    </p>
+
+    <form id="statusForm" method="post" th:action="@{/users/{id}/suspend(id=${userId})}"></form>
+
+    <button type="button" class="danger" th:unless="${suspended}"
+            data-confirm-form="statusForm"
+            th:data-action="@{/users/{id}/suspend(id=${userId})}"
+            data-confirm-title="Suspend this account?"
+            data-confirm-message="The user will not be able to sign in until the account is activated."
+            data-confirm-label="Suspend">Suspend</button>
+
+    <button type="button" th:if="${suspended}"
+            data-confirm-form="statusForm"
+            th:data-action="@{/users/{id}/activate(id=${userId})}"
+            data-confirm-title="Activate this account?"
+            data-confirm-message="The account is enabled and a new temporary password is emailed to the user."
+            data-confirm-label="Activate">Activate</button>
+  </section>
+</main>
+
+<dialog th:replace="~{dashboard :: confirmDialog}"></dialog>
+<script th:replace="~{dashboard :: confirmScript}"></script>
+</body>
+</html>

@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>User Management</title>
+  <style th:replace="~{dashboard :: styles}"></style>
+</head>
+<body>
+<header th:replace="~{dashboard :: topbar}"></header>
+
+<main>
+  <div class="page-head">
+    <h1>User Management</h1>
+    <a class="button" th:href="@{/users/new}">New User</a>
+  </div>
+
+  <div class="banner success" role="status" th:if="${successMessage}" th:text="${successMessage}"></div>
+  <div class="banner error" role="alert" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+
+  <section class="cards" aria-label="Summary">
+    <div class="card">
+      <div class="value" th:text="${dashboard.totalUsers()}">0</div>
+      <div class="label">Users</div>
+    </div>
+    <div class="card">
+      <div class="value" th:text="${dashboard.activeAdministrators()}">0</div>
+      <div class="label">Active administrators</div>
+    </div>
+    <div class="card">
+      <div class="value" th:text="${dashboard.suspendedUsers()}">0</div>
+      <div class="label">Suspended accounts</div>
+    </div>
+  </section>
+
+  <div class="banner note" th:if="${dashboard.activeAdministrators() == 1}">
+    Only one active Administrator exists. That account cannot be suspended or deleted until another
+    Administrator is active.
+  </div>
+
+  <label for="filter" class="hint">Filter users</label>
+  <input type="text" id="filter" class="filter" placeholder="Name, email, role or status">
+
+  <p th:if="${#lists.isEmpty(dashboard.users())}">No users yet.</p>
+
+  <div class="table-wrap" th:unless="${#lists.isEmpty(dashboard.users())}">
+    <table id="userTable">
+      <thead>
+        <tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Actions</th></tr>
+      </thead>
+      <tbody>
+        <tr th:each="u : ${dashboard.users()}">
+          <td th:text="${u.fullName()}">Ana Silva</td>
+          <td th:text="${u.email()}">ana@example.com</td>
+          <td th:text="${u.roleLabel()}">Editor</td>
+          <td>
+            <span class="badge" th:classappend="${u.active()} ? 'active' : 'suspended'"
+                  th:text="${u.active() ? 'Active' : 'Suspended'}"></span>
+
+          </td>
+          <td>
+            <div class="actions">
+              <a class="button secondary" th:href="@{/users/{id}/edit(id=${u.id()})}">Edit</a>
+              <button type="button" class="danger"
+                      data-confirm-form="deleteForm"
+                      th:data-action="@{/users/{id}/delete(id=${u.id()})}"
+                      data-confirm-title="Delete this user?"
+                      th:data-confirm-message="'Delete ' + ${u.fullName()} + '? This cannot be undone.'"
+                      data-confirm-label="Delete">Delete</button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Posted by the confirmation window; the button supplies the URL. -->
+  <form id="deleteForm" method="post" th:action="@{/users}"></form>
+</main>
+
+<dialog th:replace="~{dashboard :: confirmDialog}"></dialog>
+<script th:replace="~{dashboard :: confirmScript}"></script>
+<script>
+  document.getElementById('filter').addEventListener('input', function (event) {
+    var text = event.target.value.toLowerCase();
+    document.querySelectorAll('#userTable tbody tr').forEach(function (row) {
+      row.hidden = text !== '' && row.textContent.toLowerCase().indexOf(text) === -1;
+    });
+  });
+</script>
+</body>
+</html>
