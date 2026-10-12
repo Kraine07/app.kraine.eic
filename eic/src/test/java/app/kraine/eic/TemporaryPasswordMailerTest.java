@@ -16,8 +16,8 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.JavaMailSenderImpl;
 import org.springframework.test.util.ReflectionTestUtils;
 
+import app.kraine.eic.auth.TemporaryPasswordMailer;
 import app.kraine.eic.exception.EmailDeliveryException;
-import app.kraine.eic.security.TemporaryPasswordMailer;
 
 import java.util.HashMap;
 import java.util.Map;

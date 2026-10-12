@@ -23,6 +23,7 @@ import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.authentication.LockedException;
+import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 
 
@@ -42,6 +43,7 @@ public class LoginController {
     static final String ATTEMPTS_EXHAUSTED =
             "Too many failed login attempts. Your account has been suspended. Contact an Administrator.";
     static final String FAILED = "Sign-in failed. Try again later.";
+    static final String CHANGE_PASSWORD_URL = "redirect:/change-password";
 
     private final LoginService loginService;
 
@@ -78,7 +80,15 @@ public class LoginController {
             return LOGIN_VIEW; // alternative flow: invalid fields are highlighted, the user corrects them
         }
         try {
-            loginService.login(form, request, response);
+            Authentication authUser = loginService.login(form, request, response);
+
+            // if password is temporary, the user is redirected to the change-password page (UA-9).
+            if (authUser instanceof UsernamePasswordAuthenticationToken) {
+                return SIGNED_IN_URL;
+            } else {
+                return CHANGE_PASSWORD_URL;
+            }
+
         } catch (LoginAttemptsExhaustedException ex) {
             return fail(model, ATTEMPTS_EXHAUSTED);
         } catch (LockedException | DisabledException ex) {
@@ -89,7 +99,6 @@ public class LoginController {
             return fail(model, FAILED);
         }
         // UC-01 step 10 (temporary password) belongs to the change-password use case (UA-9).
-        return SIGNED_IN_URL;
     }
 
 

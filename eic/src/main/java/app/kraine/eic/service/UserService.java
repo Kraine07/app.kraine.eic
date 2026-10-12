@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import app.kraine.eic.auth.TemporaryPasswordGenerator;
+import app.kraine.eic.auth.TemporaryPasswordMailer;
 import app.kraine.eic.exception.DuplicateEmailException;
 import app.kraine.eic.exception.UserLinkedToPropertyException;
 import app.kraine.eic.exception.UserNotFoundException;
@@ -23,8 +25,6 @@ import app.kraine.eic.model.RoleType;
 import app.kraine.eic.model.User;
 import app.kraine.eic.repository.RoleRepositoryInterface;
 import app.kraine.eic.repository.UserRepoInterface;
-import app.kraine.eic.security.TemporaryPasswordGenerator;
-import app.kraine.eic.security.TemporaryPasswordMailer;
 import app.kraine.eic.userManagement.LastAdministratorGuard;
 import app.kraine.eic.userManagement.UserPropertyLinks;
 import app.kraine.eic.userManagement.UserViews.RoleOption;

@@ -1,4 +1,4 @@
-package app.kraine.eic.security;
+package app.kraine.eic.auth;
 
 
 import jakarta.mail.MessagingException;
@@ -53,15 +53,15 @@ public class TemporaryPasswordMailer {
                       <tr>
                         <td style="padding:28px; font-family:Arial,Helvetica,sans-serif; font-size:16px; line-height:24px; color:#1b1f24;">
                           <p style="margin:0 0 16px;">Hello {{firstName}},</p>
-                          <p style="margin:0 0 16px;">An account has been set up for you in Equipment Inventory.</p>
+                          <p style="margin:0 0 16px;">Your Equipment Inventory account is now ready.</p>
                           <p style="margin:0 0 8px;">Sign in with your email address and this temporary password:</p>
                           <p style="margin:0 0 20px; padding:14px 16px; background-color:#eef1f4; border:1px solid #d5d9df; border-radius:4px; font-family:Consolas,'Courier New',monospace; font-size:20px; color:#1b1f24;">{{password}}</p>
                           <p style="margin:0;">Please change it after you sign in.</p>
                         </td>
                       </tr>
                       <tr>
-                        <td style="padding:16px 28px; border-top:1px solid #d5d9df; font-family:Arial,Helvetica,sans-serif; font-size:13px; line-height:20px; color:#4a5360;">
-                          You received this email because an Administrator set up an account for this address.
+                        <td style="padding:16px 28px; border-top:1px solid #d5d9df; font-family:Arial,Helvetica,sans-serif; font-size:10px; line-height:20px; color:#4a5360;">
+                          You received this email because an Administrator set up  or reactivated an account for this address.
                           If you were not expecting it, you can ignore this message.
                         </td>
                       </tr>

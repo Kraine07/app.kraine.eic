@@ -1,4 +1,4 @@
-package app.kraine.eic.security;
+package app.kraine.eic.auth;
 
 import java.security.SecureRandom;
 import java.util.ArrayList;

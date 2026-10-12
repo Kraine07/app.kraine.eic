@@ -8,6 +8,9 @@ import org.springframework.security.config.annotation.method.configuration.Enabl
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.LoginUrlAuthenticationEntryPoint;
+import org.springframework.security.web.context.SecurityContextHolderFilter;
+
+import app.kraine.eic.auth.PasswordChangeRequiredFilter;
 
 
 /**
@@ -37,7 +40,7 @@ public class WebSecurityConfig {
                 .sessionManagement(session -> session
                     .invalidSessionUrl("/login?timeout")   // redirect when session expires
                     .maximumSessions(1)                    // optional: limit concurrent sessions
-                );
+                )   .addFilterAfter(new PasswordChangeRequiredFilter(), SecurityContextHolderFilter.class);
         return http.build();
     }
 
@@ -49,5 +52,6 @@ public class WebSecurityConfig {
         return configuration.getAuthenticationManager();
     }
 
+    
 
 }
