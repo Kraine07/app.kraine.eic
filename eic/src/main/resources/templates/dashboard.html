@@ -5,7 +5,7 @@
 
 <!-- Include in <head>:  <style th:replace="~{fragments/base :: styles}"></style> -->
 <style th:fragment="styles">
-  :root { --ink: #1b1f24; --muted: #4a5360; --line: #d5d9df; --bg: #f6f7f9; --brand: #0b5cad;
+  :root { --ink: #1b1f24; --muted: #4a5360; --line: #d5d9df; --bg: #bbbbbb; --brand: #0b5cad;
           --danger: #b3261e; --ok: #1b6b2f; }
   * { box-sizing: border-box; }
   body { font-family: system-ui, sans-serif; margin: 0; color: var(--ink); background: var(--bg); }
@@ -23,10 +23,10 @@
   .banner.error { background: #fdecea; border: 1px solid var(--danger); color: #7f1d1d; }
   .banner.note { background: #fff8e1; border: 1px solid #b58900; color: #5c4400; }
   .cards { display: grid; grid-template-columns: repeat(auto-fit, minmax(10rem, 1fr)); gap: 1rem; margin-bottom: 1.5rem; }
-  .card { background: #fff; border: 1px solid var(--line); border-radius: 6px; padding: 1rem; }
+  .card { background: #c4c4c4; border: 1px solid var(--line); border-radius: 6px; padding: 1rem; }
   .card .value { font-size: 1.75rem; font-weight: 700; }
   .card .label { color: var(--muted); }
-  table { width: 100%; border-collapse: collapse; background: #fff; border: 1px solid var(--line); }
+  table { width: 100%; border-collapse: collapse; background: #adadad; border: 1px solid var(--line); }
   th, td { text-align: left; padding: .65rem .75rem; border-bottom: 1px solid var(--line); }
   th { background: #eef1f4; font-size: .9rem; }
   .table-wrap { overflow-x: auto; }
@@ -63,9 +63,13 @@
   <nav aria-label="Main" style="display:flex; gap:1.25rem;">
     <a th:href="@{/equipment}">Equipment</a>
     <a th:href="@{/users}">Users</a>
+    <a th:href="@{/audit}">Audit Logs</a>
   </nav>
   <form th:action="@{/logout}" method="post">
-    <button type="submit" class="linklike">Sign out</button>
+    <button type="submit" class="linklike">
+      <span th:text="${firstName}"></span>
+      <span th:text="${lastName}"></span>
+    </button>
   </form>
 </header>
 

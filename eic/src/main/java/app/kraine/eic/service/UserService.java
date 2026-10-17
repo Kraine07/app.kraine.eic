@@ -9,11 +9,14 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import app.kraine.eic.audit.AuditEventType;
+import app.kraine.eic.audit.AuditService;
 import app.kraine.eic.auth.TemporaryPasswordGenerator;
 import app.kraine.eic.auth.TemporaryPasswordMailer;
 import app.kraine.eic.exception.DuplicateEmailException;
@@ -52,13 +55,15 @@ public class UserService {
     private final LastAdministratorGuard lastAdministratorGuard;
     private final ObjectProvider<UserPropertyLinks> propertyLinks;
     private final TransactionTemplate transactionTemplate;
+    private final AuditService auditService;
 
     /**
      * Suspending and deleting check "is this the last active Administrator" and then change data. Two
      * Administrators doing this to each other at the same moment could otherwise both pass the check.
      * The lock covers one application instance; with several instances use a database lock instead.
      */
-    private final Lock administratorLock = new ReentrantLock();
+
+    private final ReentrantLock administratorLock;
 
     @PostConstruct
     void warnWhenPropertyLinksAreMissing() {
@@ -131,6 +136,7 @@ public class UserService {
         User saved;
         try {
             saved = userRepository.saveAndFlush(user);
+            auditService.record(AuditEventType.USER_CREATED, actor, user.getEmail(), "User " + user.getEmail() + " created with role " + form.getRoleType());
         } catch (DataIntegrityViolationException ex) {
             throw new DuplicateEmailException(email); // another request used the email a moment ago
         }
@@ -154,6 +160,7 @@ public class UserService {
         user.setEmail(email);
         try {
             userRepository.saveAndFlush(user);
+            auditService.record(AuditEventType.USER_UPDATED, actor, user.getEmail(), "User " + user.getEmail() + " updated.");
         } catch (DataIntegrityViolationException ex) {
             throw new DuplicateEmailException(email);
         }
@@ -171,6 +178,7 @@ public class UserService {
             lastAdministratorGuard.assertNotLastActiveAdministrator(user); // step 7
             user.setIsSuspended(true);                          // step 8
             userRepository.save(user);
+            auditService.record(AuditEventType.USER_SUSPENDED, actor, user.getEmail(), "User " + user.getEmail() + " suspended."); // step 9
             log.info("User {} suspended by {}", user.getEmail(), actor);   // step 9
         });
     }
@@ -191,6 +199,7 @@ public class UserService {
         user.setIsTemporaryPassword(true);
         userRepository.save(user);
         mailer.sendTemporaryPassword(user.getEmail(), user.getFirstName(), temporaryPassword);
+        auditService.record(AuditEventType.USER_ACTIVATED, actor, user.getEmail(), "User " + user.getEmail() + " activated.");
         log.info("User {} activated by {}", user.getEmail(), actor);
     }
  
@@ -204,7 +213,8 @@ public class UserService {
                 throw new UserLinkedToPropertyException("User " + user.getEmail() + " is linked to a property and cannot be deleted.");
             }
             lastAdministratorGuard.assertNotLastActiveAdministrator(user);     // step 6
-            userRepository.delete(user);                                       // step 7
+            userRepository.delete(user);
+            auditService.record(AuditEventType.USER_DELETED, actor, user.getEmail(), "User " + user.getEmail() + " deleted.");
             log.info("User {} deleted by {}", user.getEmail(), actor);
         });
     }

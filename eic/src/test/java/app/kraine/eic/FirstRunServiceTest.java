@@ -40,7 +40,7 @@ class FirstRunServiceTest {
     @BeforeEach
     void setUp() {
         TransactionTemplate transactions = new TransactionTemplate(mock(PlatformTransactionManager.class));
-        service = new FirstRunService(userRepository, passwordEncoder, roleRepository, transactions);
+        service = new FirstRunService(userRepository, passwordEncoder, roleRepository, transactions, null);
     }
  
     private static SetupForm form() {

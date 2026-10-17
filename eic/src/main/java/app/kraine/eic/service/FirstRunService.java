@@ -3,7 +3,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.support.TransactionTemplate;
 
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -13,7 +12,10 @@ import java.util.concurrent.locks.ReentrantLock;
 import app.kraine.eic.model.User;
 import app.kraine.eic.model.RoleType;
 import app.kraine.eic.repository.UserRepoInterface;
+import jakarta.transaction.Transactional;
 import app.kraine.eic.repository.RoleRepositoryInterface;
+import app.kraine.eic.audit.AuditEventType;
+import app.kraine.eic.audit.AuditService;
 import app.kraine.eic.exception.SetupAlreadyCompletedException;
 import app.kraine.eic.form.SetupForm;
 
@@ -34,14 +36,26 @@ import app.kraine.eic.form.SetupForm;
  */
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class FirstRunService {
 
     private final UserRepoInterface userRepository;
     private final PasswordEncoder passwordEncoder;
     private final RoleRepositoryInterface roleRepository;
     private final TransactionTemplate transactionTemplate;
+    private final AuditService auditService;
 
+    public FirstRunService(
+            UserRepoInterface userRepository,
+            PasswordEncoder passwordEncoder,
+            RoleRepositoryInterface roleRepository,
+            TransactionTemplate transactionTemplate,
+            AuditService auditService) {
+        this.userRepository = userRepository;
+        this.passwordEncoder = passwordEncoder;
+        this.roleRepository = roleRepository;
+        this.transactionTemplate = transactionTemplate;
+        this.auditService = auditService;
+    }
 
     private final Lock setupLock = new ReentrantLock();
 
@@ -70,6 +84,8 @@ public class FirstRunService {
      *
      * @throws SetupAlreadyCompletedException if a user account already exists
      */
+
+    @Transactional
     public User createFirstAdministrator(SetupForm form) {
         setupLock.lock();
         try {
@@ -78,12 +94,14 @@ public class FirstRunService {
                     usersExist.set(true);
                     throw new SetupAlreadyCompletedException("Setup already completed: user accounts exist.");
                 }
+                auditService.record(AuditEventType.FIRST_ADMIN_CREATED, "system",  form.getEmail(), "First admin user created.");
                 return userRepository.save(newAdministrator(form));
             });
             usersExist.set(true);
             log.info("First administrator account created for {}", saved.getEmail());
             return saved;
         } finally {
+
             setupLock.unlock();
         }
     }

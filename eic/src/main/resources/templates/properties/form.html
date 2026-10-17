@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title th:text="${editing} ? 'Update Property' : 'Create Property'">Property</title>
+  <style th:replace="~{dashboard :: styles}"></style>
+</head>
+<body>
+<header th:replace="~{dashboard :: topbar}"></header>
+
+<main>
+  <h1 th:text="${editing} ? 'Update Property' : 'Create Property'">Create Property</h1>
+
+  <form class="panel" method="post" novalidate
+        th:action="${editing} ? @{/properties/{id}(id=${propertyId})} : @{/properties}" th:object="${propertyForm}">
+
+    <div class="field">
+      <label for="name">Name</label>
+      <input type="text" id="name" th:field="*{name}" autocomplete="off"
+             th:classappend="${#fields.hasErrors('name')} ? 'invalid'">
+      <p class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></p>
+    </div>
+
+    <div class="field">
+      <label for="regionId">Region</label>
+      <select id="regionId" th:field="*{regionId}" th:classappend="${#fields.hasErrors('regionId')} ? 'invalid'">
+        <option value="">Select a region</option>
+        <option th:each="r : ${regions}" th:value="${r.id()}" th:text="${r.label()}">North</option>
+      </select>
+      <p class="error" th:if="${#fields.hasErrors('regionId')}" th:errors="*{regionId}"></p>
+    </div>
+
+    <div class="field">
+      <label for="editorId">Editor</label>
+      <select id="editorId" th:field="*{editorId}" th:classappend="${#fields.hasErrors('editorId')} ? 'invalid'">
+        <option value="">No editor</option>
+        <option th:each="e : ${editors}" th:value="${e.id()}" th:text="${e.label()}">Ana Silva</option>
+      </select>
+      <p class="hint">Only one editor can be assigned to a property at a time.</p>
+      <p class="error" th:if="${#fields.hasErrors('editorId')}" th:errors="*{editorId}"></p>
+    </div>
+
+    <p class="hint" th:if="${editing}">
+      This property has <strong th:text="${locationCount}">0</strong> location(s).
+    </p>
+
+    <div class="form-actions">
+      <button type="submit">Submit</button>
+      <a class="button secondary" th:href="@{/properties}">Cancel</a>
+    </div>
+  </form>
+</main>
+</body>
+</html>

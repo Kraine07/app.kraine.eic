@@ -20,7 +20,7 @@ public class LastAdministratorGuard  {
                 && target.getRole().getRoleType() == RoleType.ADMINISTRATOR;
         if (activeAdministrator
                 && userRepository.countByRoleTypeAndStatus(RoleType.ADMINISTRATOR, !target.getIsSuspended()) <= 1) {
-            throw new LastAdministratorException("Cannot suspend or delete the last active Administrator.");
+            throw new LastAdministratorException();
         }
     }
 }

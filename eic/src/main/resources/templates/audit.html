@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Audit Log</title>
+  <style th:replace="~{dashboard :: styles}"></style>
+  <style>
+    .filters { display: grid; grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)); gap: 1rem;
+               align-items: end; background: #fff; border: 1px solid var(--line); border-radius: 6px;
+               padding: 1rem; margin-bottom: 1rem; }
+    .filters .field { margin: 0; }
+    input[type=date] { width: 100%; padding: .55rem .65rem; font-size: 1rem; border: 1px solid #8a93a0;
+                       border-radius: 4px; background: #fff; }
+    .pager { display: flex; align-items: center; gap: 1rem; margin-top: 1rem; }
+    td.details { max-width: 22rem; overflow-wrap: anywhere; }
+  </style>
+</head>
+<body>
+<header th:replace="~{dashboard:: topbar}"></header>
+
+<main>
+  <div class="page-head">
+    <h1>Audit Log</h1>
+    <a class="button secondary"
+       th:href="@{/audit/export.csv(from=${from},to=${to},type=${typeValue},email=${email})}">Export CSV</a>
+  </div>
+
+  <p class="hint">
+    Read-only. Times are in UTC. Events are kept for
+    <strong th:text="${retentionDays}">365</strong> days and then removed automatically.
+  </p>
+
+  <div class="banner error" role="alert" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+
+  <form class="filters" method="get" th:action="@{/audit}">
+    <div class="field">
+      <label for="from">From</label>
+      <input type="date" id="from" name="from" th:value="${from}">
+    </div>
+    <div class="field">
+      <label for="to">To</label>
+      <input type="date" id="to" name="to" th:value="${to}">
+    </div>
+    <div class="field">
+      <label for="type">Event type</label>
+      <select id="type" name="type">
+        <option value="">All events</option>
+        <option th:each="t : ${types}" th:value="${t.value()}" th:text="${t.label()}"
+                th:selected="${t.value() == typeValue}">Login failed</option>
+      </select>
+    </div>
+    <div class="field">
+      <label for="email">Email</label>
+      <input type="text" id="email" name="email" th:value="${email}" placeholder="User or account" autocomplete="off">
+    </div>
+    <div class="field">
+      <button type="submit">Filter</button>
+    </div>
+  </form>
+
+  <p th:if="${#lists.isEmpty(results.rows())}">No events match these filters.</p>
+
+  <div class="table-wrap" th:unless="${#lists.isEmpty(results.rows())}">
+    <table>
+      <thead>
+        <tr><th>Time (UTC)</th><th>Event</th><th>User</th><th>Account</th><th>IP address</th><th>Details</th></tr>
+      </thead>
+      <tbody>
+        <tr th:each="row : ${results.rows()}">
+          <td th:text="${row.time()}">2026-10-12 10:15:30</td>
+          <td th:text="${row.type()}">Login failed</td>
+          <td th:text="${row.actor()}">ana@example.com</td>
+          <td th:text="${row.target()}">ana@example.com</td>
+          <td th:text="${row.ipAddress()}">203.0.113.5</td>
+          <td class="details" th:text="${row.details()}">Bad credentials</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <nav class="pager" aria-label="Pages" th:if="${results.totalPages() > 1}">
+    <a class="button secondary" th:if="${results.hasPrevious()}"
+       th:href="@{/audit(from=${from},to=${to},type=${typeValue},email=${email},page=${results.page() - 1})}">Previous</a>
+    <span>
+      Page <span th:text="${results.displayPage()}">1</span> of <span th:text="${results.totalPages()}">1</span>
+      (<span th:text="${results.totalElements()}">0</span> events)
+    </span>
+    <a class="button secondary" th:if="${results.hasNext()}"
+       th:href="@{/audit(from=${from},to=${to},type=${typeValue},email=${email},page=${results.page() + 1})}">Next</a>
+  </nav>
+</main>
+</body>
+</html>

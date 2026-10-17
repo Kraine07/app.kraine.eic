@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Location Management</title>
+  <style th:replace="~{dashboard :: styles}"></style>
+</head>
+<body>
+<header th:replace="~{dashboard :: topbar}"></header>
+
+<main>
+  <div class="page-head">
+    <h1>Location Management</h1>
+    <a class="button" th:href="@{/locations/new}">Create Location</a>
+  </div>
+
+  <div class="banner success" role="status" th:if="${successMessage}" th:text="${successMessage}"></div>
+  <div class="banner error" role="alert" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+
+  <label for="filter" class="hint">Filter locations</label>
+  <input type="text" id="filter" class="filter" placeholder="Property or location">
+
+  <p th:if="${#lists.isEmpty(locations)}">No locations yet.</p>
+
+  <div class="table-wrap" th:unless="${#lists.isEmpty(locations)}">
+    <table id="locationTable">
+      <thead>
+        <tr><th>Property</th><th>Location</th><th>Actions</th></tr>
+      </thead>
+      <tbody>
+        <tr th:each="l : ${locations}">
+          <td th:text="${l.propertyName()}">North Site</td>
+          <td th:text="${l.name()}">Store Room</td>
+          <td>
+            <div class="actions">
+              <a class="button secondary"
+                 th:href="@{/locations/edit(propertyId=${l.propertyId()},name=${l.name()})}">Edit</a>
+              <button type="button" class="danger"
+                      data-confirm-form="deleteForm"
+                      th:data-action="@{/locations/delete(propertyId=${l.propertyId()},name=${l.name()})}"
+                      data-confirm-title="Delete this location?"
+                      th:data-confirm-message="'Delete ' + ${l.name()} + ' from ' + ${l.propertyName()} + '? This cannot be undone.'"
+                      data-confirm-label="Yes">Delete</button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Posted by the confirmation window; the button supplies the URL and the location it names. -->
+  <form id="deleteForm" method="post" th:action="@{/locations}"></form>
+</main>
+
+<dialog th:replace="~{dashboard :: confirmDialog}"></dialog>
+<script th:replace="~{dashboard :: confirmScript}"></script>
+<script>
+  document.getElementById('filter').addEventListener('input', function (event) {
+    var text = event.target.value.toLowerCase();
+    document.querySelectorAll('#locationTable tbody tr').forEach(function (row) {
+      row.hidden = text !== '' && row.textContent.toLowerCase().indexOf(text) === -1;
+    });
+  });
+</script>
+</body>
+</html>

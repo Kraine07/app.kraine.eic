@@ -13,20 +13,22 @@ import org.springframework.stereotype.Component;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
 /**
  * Rebuilds the signed-in user's authentication from the database. After a temporary password has been
  * changed this drops PASSWORD_CHANGE_REQUIRED from the session, so the user can carry on without
  * signing in again.
  */
 @Component
-@RequiredArgsConstructor
 public class AuthRefresher {
     private final UserDetailsService userDetailsService;
 
     private final SecurityContextRepository securityContextRepository = new HttpSessionSecurityContextRepository();
     private final SecurityContextHolderStrategy securityContextHolderStrategy =
             SecurityContextHolder.getContextHolderStrategy();
+
+    public AuthRefresher(UserDetailsService userDetailsService) {
+        this.userDetailsService = userDetailsService;
+    }
 
     public void refresh(HttpServletRequest request, HttpServletResponse response) {
         Authentication current = securityContextHolderStrategy.getContext().getAuthentication();

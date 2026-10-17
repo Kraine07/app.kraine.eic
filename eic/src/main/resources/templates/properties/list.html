@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Property Management</title>
+  <style th:replace="~{dashboard :: styles}"></style>
+</head>
+<body>
+<header th:replace="~{dashboard :: topbar}"></header>
+
+<main>
+  <div class="page-head">
+    <h1>Property Management</h1>
+    <a class="button" th:href="@{/properties/new}">Create Property</a>
+  </div>
+
+  <div class="banner success" role="status" th:if="${successMessage}" th:text="${successMessage}"></div>
+  <div class="banner error" role="alert" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+
+  <label for="filter" class="hint">Filter properties</label>
+  <input type="text" id="filter" class="filter" placeholder="Name, region or editor">
+
+  <p th:if="${#lists.isEmpty(properties)}">No properties yet.</p>
+
+  <div class="table-wrap" th:unless="${#lists.isEmpty(properties)}">
+    <table id="propertyTable">
+      <thead>
+        <tr><th>Name</th><th>Region</th><th>Editor</th><th>Locations</th><th>Actions</th></tr>
+      </thead>
+      <tbody>
+        <tr th:each="p : ${properties}">
+          <td th:text="${p.name()}">North Site</td>
+          <td th:text="${p.regionName()}">North</td>
+          <td th:text="${p.editorName()}">Ana Silva</td>
+          <td th:text="${p.locationCount()}">3</td>
+          <td>
+            <div class="actions">
+              <a class="button secondary" th:href="@{/properties/{id}/edit(id=${p.id()})}">Edit</a>
+              <button type="button" class="danger"
+                      data-confirm-form="deleteForm"
+                      th:data-action="@{/properties/{id}/delete(id=${p.id()})}"
+                      data-confirm-title="Delete this property?"
+                      th:data-confirm-message="${p.locationCount() == 0}
+                          ? 'Delete ' + ${p.name()} + '? This cannot be undone.'
+                          : 'Delete ' + ${p.name()} + ' and its ' + ${p.locationCount()} + ' location(s)? This cannot be undone.'"
+                      data-confirm-label="Delete">Delete</button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Posted by the confirmation window; the button supplies the URL. -->
+  <form id="deleteForm" method="post" th:action="@{/properties}"></form>
+</main>
+
+<dialog th:replace="~{dashboard :: confirmDialog}"></dialog>
+<script th:replace="~{dashboard :: confirmScript}"></script>
+<script>
+  document.getElementById('filter').addEventListener('input', function (event) {
+    var text = event.target.value.toLowerCase();
+    document.querySelectorAll('#propertyTable tbody tr').forEach(function (row) {
+      row.hidden = text !== '' && row.textContent.toLowerCase().indexOf(text) === -1;
+    });
+  });
+</script>
+</body>
+</html>

@@ -1,10 +1,9 @@
 package app.kraine.eic.service;
 
-import app.kraine.eic.model.LoginForm;
 import app.kraine.eic.exception.LoginAttemptsExhaustedException;
+import app.kraine.eic.form.LoginForm;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
@@ -23,7 +22,6 @@ import org.springframework.stereotype.Service;
 /** UC-01 steps 6-13: authenticates the credentials and starts the signed-in session. */
 @Slf4j
 @Service
-@RequiredArgsConstructor
 public class LoginService {
 
     private final AuthenticationManager authenticationManager;
@@ -32,6 +30,11 @@ public class LoginService {
     private final SecurityContextRepository securityContextRepository = new HttpSessionSecurityContextRepository();
     private final SecurityContextHolderStrategy securityContextHolderStrategy =
             SecurityContextHolder.getContextHolderStrategy();
+
+    public LoginService(AuthenticationManager authenticationManager, LoginAttemptService loginAttemptService) {
+        this.authenticationManager = authenticationManager;
+        this.loginAttemptService = loginAttemptService;
+    }
 
     /**
      * @throws LoginAttemptsExhaustedException this failed attempt was the last one allowed; the account is now suspended

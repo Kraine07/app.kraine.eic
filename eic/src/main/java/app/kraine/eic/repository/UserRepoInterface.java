@@ -35,4 +35,6 @@ public interface UserRepoInterface extends JpaRepository<User, Long> {
     // how many active Administrators exist (UA-23, UA-24)
     @Query("SELECT COUNT(u) FROM User u WHERE u.role.roleType = :roleType AND u.isSuspended = :isSuspended")
     long countByRoleTypeAndStatus(@Param("roleType") RoleType roleType, @Param("isSuspended") boolean isSuspended);
+
+    List<User> findActiveByRoleRoleType(RoleType roleType);
 }

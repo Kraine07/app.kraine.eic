@@ -9,16 +9,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-
 import app.kraine.eic.exception.AuthenticationException;
 import app.kraine.eic.exception.LoginAttemptsExhaustedException;
-import app.kraine.eic.model.LoginForm;
+import app.kraine.eic.form.LoginForm;
 import app.kraine.eic.service.LoginService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.DisabledException;
@@ -29,7 +29,7 @@ import org.springframework.security.core.Authentication;
 
 
 /** UC-01: the login page. */
-
+@Slf4j
 @RequestMapping("/login")
 @Controller
 @RequiredArgsConstructor
@@ -46,7 +46,6 @@ public class LoginController {
     static final String CHANGE_PASSWORD_URL = "redirect:/change-password";
 
     private final LoginService loginService;
-
 
 
 

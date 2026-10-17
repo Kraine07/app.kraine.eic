@@ -33,6 +33,10 @@ public class LoginAttemptService {
                 .ifPresent(this::recordFailure);
     }
 
+
+
+
+
     @EventListener
     @Transactional
     public void onSuccess(AuthenticationSuccessEvent event) {
@@ -44,6 +48,10 @@ public class LoginAttemptService {
         });
     }
 
+
+
+
+
     @Transactional(readOnly = true)
     public boolean isSuspended(String email) {
         return userRepository.findByEmailIgnoreCase(email.trim())
@@ -51,8 +59,12 @@ public class LoginAttemptService {
                 .orElse(false);
     }
 
+
+
+
+
     private void recordFailure(User user) {
-        if (user.getIsSuspended() != true) {
+        if (user.getIsSuspended()) {
             return; // already suspended: nothing more to count
         }
         int attempts = user.getFailedAttempts() + 1;

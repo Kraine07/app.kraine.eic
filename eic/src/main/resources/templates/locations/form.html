@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title th:text="${editing} ? 'Update Location' : 'Create Location'">Location</title>
+  <style th:replace="~{dashboard :: styles}"></style>
+</head>
+<body>
+<header th:replace="~{dashboard :: topbar}"></header>
+
+<main>
+  <h1 th:text="${editing} ? 'Update Location' : 'Create Location'">Create Location</h1>
+
+  <form class="panel" method="post" novalidate
+        th:action="${editing} ? @{/locations/update} : @{/locations}" th:object="${locationForm}">
+
+    <!-- Updating: the property is fixed, and the original name says which location is being edited. -->
+    <th:block th:if="${editing}">
+      <input type="hidden" th:field="*{propertyId}">
+      <input type="hidden" th:field="*{originalName}">
+      <div class="field">
+        <label>Property</label>
+        <p class="readonly" th:text="${propertyName}">North Site</p>
+      </div>
+    </th:block>
+
+    <div class="field" th:unless="${editing}">
+      <label for="propertyId">Property</label>
+      <select id="propertyId" th:field="*{propertyId}" th:classappend="${#fields.hasErrors('propertyId')} ? 'invalid'">
+        <option value="">Select a property</option>
+        <option th:each="p : ${properties}" th:value="${p.id()}" th:text="${p.label()}">North Site</option>
+      </select>
+      <p class="hint" th:if="${#lists.isEmpty(properties)}">
+        No properties are assigned to you yet. Ask an Administrator to assign one.
+      </p>
+      <p class="error" th:if="${#fields.hasErrors('propertyId')}" th:errors="*{propertyId}"></p>
+    </div>
+
+    <div class="field">
+      <label for="name">Name</label>
+      <input type="text" id="name" th:field="*{name}" autocomplete="off"
+             th:classappend="${#fields.hasErrors('name')} ? 'invalid'">
+      <p class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></p>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit">Submit</button>
+      <a class="button secondary" th:href="@{/locations}">Cancel</a>
+    </div>
+  </form>
+</main>
+</body>
+</html>

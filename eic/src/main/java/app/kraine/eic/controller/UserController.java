@@ -15,7 +15,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import app.kraine.eic.form.UserForm;
 import app.kraine.eic.service.UserService;
 import app.kraine.eic.userManagement.UserViews;
-import app.kraine.eic.userManagement.UserViews.UserDashboard;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import app.kraine.eic.exception.DuplicateEmailException;
