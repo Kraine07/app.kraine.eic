@@ -15,6 +15,7 @@ import org.springframework.validation.BeanPropertyBindingResult;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.servlet.mvc.support.RedirectAttributesModelMap;
 
+import app.kraine.eic.audit.AuditService;
 import app.kraine.eic.controller.UserController;
 import app.kraine.eic.exception.DuplicateEmailException;
 import app.kraine.eic.exception.EmailDeliveryException;
@@ -47,9 +48,7 @@ class UserManagementControllerTest {
     private final Authentication admin =
             UsernamePasswordAuthenticationToken.authenticated(ADMIN, null, List.of());
  
-    private UserController controller() {
-        return new UserController(userService, auditService);
-    }
+    private UserController controller = new UserController(userService);
  
     private static UserForm form(RoleType role) {
         UserForm form = new UserForm();
@@ -72,7 +71,7 @@ class UserManagementControllerTest {
         BindingResult result = resultFor(form);
         when(userService.roleOptions()).thenReturn(List.of());
  
-        String view = controller().create(form, result, model, redirect, admin);
+        String view = controller.create(form, result, model, redirect, admin);
  
         assertEquals("users/form", view);
         assertTrue(result.hasFieldErrors("roleType"));
@@ -83,7 +82,7 @@ class UserManagementControllerTest {
     void createRedirectsToTheListWithAConfirmation() {
         UserForm form = form(RoleType.EDITOR);
  
-        String view = controller().create(form, resultFor(form), model, redirect, admin);
+        String view = controller.create(form, resultFor(form), model, redirect, admin);
  
         assertEquals("redirect:/users", view);
         assertTrue(redirect.getFlashAttributes().get("successMessage").toString().contains("ana@example.com"));
@@ -97,7 +96,7 @@ class UserManagementControllerTest {
         when(userService.roleOptions()).thenReturn(List.of());
         doThrow(new DuplicateEmailException("ana@example.com")).when(userService).createUser(any(), any());
  
-        String view = controller().create(form, result, model, redirect, admin);
+        String view = controller.create(form, result, model, redirect, admin);
  
         assertEquals("users/form", view);
         assertTrue(result.hasFieldErrors("email"));
@@ -110,7 +109,7 @@ class UserManagementControllerTest {
         doThrow(new EmailDeliveryException("The email could not be sent."))
                 .when(userService).createUser(any(), any());
  
-        String view = controller().create(form, resultFor(form), model, redirect, admin);
+        String view = controller.create(form, resultFor(form), model, redirect, admin);
  
         assertEquals("users/form", view);
         assertTrue(model.getAttribute("errorMessage").toString().contains("not created"));
@@ -126,7 +125,7 @@ class UserManagementControllerTest {
         when(userService.findForEdit(5L)).thenReturn(
                 new UserViews.UserEditData(5L, form(RoleType.EDITOR), "Editor", false));
  
-        String view = controller().update(5L, form, result, model, redirect, admin);
+        String view = controller.update(5L, form, result, model, redirect, admin);
  
         assertEquals("users/form", view);
         assertTrue(result.hasFieldErrors("email"));
@@ -139,7 +138,7 @@ class UserManagementControllerTest {
     void suspendExplainsWhyTheLastAdministratorCannotBeSuspended() {
         doThrow(new LastAdministratorException()).when(userService).suspend(1L, ADMIN);
  
-        String view = controller().suspend(1L, redirect, admin);
+        String view = controller.suspend(1L, redirect, admin);
  
         assertEquals("redirect:/users", view);
         assertEquals("At least one active Administrator account must exist.",
@@ -150,14 +149,14 @@ class UserManagementControllerTest {
     void deleteExplainsWhyAUserLinkedToAPropertyCannotBeDeleted() {
         doThrow(new UserLinkedToPropertyException("Test user linked to property.")).when(userService).delete(4L, ADMIN);
  
-        controller().delete(4L, redirect, admin);
+        controller.delete(4L, redirect, admin);
  
         assertTrue(redirect.getFlashAttributes().get("errorMessage").toString().contains("linked to a property"));
     }
  
     @Test
     void deleteConfirmsOnSuccess() {
-        controller().delete(4L, redirect, admin);
+        controller.delete(4L, redirect, admin);
  
         assertEquals("User account deleted.", redirect.getFlashAttributes().get("successMessage"));
     }
@@ -169,7 +168,7 @@ class UserManagementControllerTest {
         when(userService.dashboard()).thenReturn(new UserViews.UserDashboard(List.of(), 0, 0, 0));
         when(auditService.countFailedLoginsSince(any())).thenReturn(3L);
  
-        String view = controller().list(model);
+        String view = controller.list(model);
  
         assertEquals("users/list", view);
         assertEquals(3L, model.getAttribute("failedLogins24h"));

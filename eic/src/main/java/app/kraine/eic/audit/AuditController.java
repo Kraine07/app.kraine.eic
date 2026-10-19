@@ -28,11 +28,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class AuditController {
 
-    static final String VIEW = "audit";
-    static final int PAGE_SIZE = 25;
-    static final int EXPORT_LIMIT = 10_000;
-    static final int DEFAULT_DAYS = 30;
-    static final String INVALID_RANGE = "The 'from' date must not be after the 'to' date.";
+    public static final String VIEW = "audit";
+    public static final int PAGE_SIZE = 25;
+    public static final int EXPORT_LIMIT = 10_000;
+    public static final int DEFAULT_DAYS = 30;
+    public static final String INVALID_RANGE = "The 'from' date must not be after the 'to' date.";
 
     private final AuditService auditService;
 

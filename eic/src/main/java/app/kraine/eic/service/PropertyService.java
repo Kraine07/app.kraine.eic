@@ -213,7 +213,7 @@ public class PropertyService {
     }
 
     private static String describe(Region region, User editor) {
-        return "Region " + region.getName() + (editor == null ? "" : ", editor " + editor.getEmail());
+        return "Region: " + region.getName() + (editor == null ? "" : ", Editor: " + editor.getEmail());
     }
 
     private static PropertyRow toRow(Property property) {

@@ -30,7 +30,7 @@ public class PasswordChangeRequiredFilter extends OncePerRequestFilter {
     /** Present on the authentication of every user whose password is still temporary. */
     public static final String AUTHORITY = "PASSWORD_CHANGE_REQUIRED";
  
-    static final String CHANGE_PASSWORD_PATH = "/change-password";
+    public static final String CHANGE_PASSWORD_PATH = "/change-password";
  
     private static final Set<String> ALLOWED_PATHS = Set.of(
             CHANGE_PASSWORD_PATH, "/logout", "/error", "/favicon.ico", "/api/me", "/api/account/password");

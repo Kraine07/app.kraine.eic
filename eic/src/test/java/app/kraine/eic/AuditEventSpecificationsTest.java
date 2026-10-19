@@ -2,7 +2,10 @@ package app.kraine.eic;
 
 
 import org.junit.jupiter.api.Test;
- 
+
+import app.kraine.eic.audit.AuditEventSpecifications;
+import app.kraine.eic.audit.AuditFilter;
+
 import java.time.Instant;
 import java.time.LocalDate;
  

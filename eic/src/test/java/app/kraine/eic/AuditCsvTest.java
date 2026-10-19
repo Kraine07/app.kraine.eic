@@ -2,7 +2,11 @@ package app.kraine.eic;
 
 
 import org.junit.jupiter.api.Test;
- 
+
+import app.kraine.eic.audit.AuditCsv;
+import app.kraine.eic.audit.AuditEvent;
+import app.kraine.eic.audit.AuditEventType;
+
 import java.io.StringWriter;
 import java.time.Instant;
 import java.util.List;

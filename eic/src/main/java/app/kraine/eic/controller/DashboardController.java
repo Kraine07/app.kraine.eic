@@ -14,8 +14,6 @@ public class DashboardController {
 
     @GetMapping
     public String showDashboard(@AuthenticationPrincipal CustomUserDetails userDetails, Model model) {
-        model.addAttribute("firstName",userDetails.getFirstName());
-        model.addAttribute("lastName",userDetails.getLastName());
         return  "dashboard";
     }
 

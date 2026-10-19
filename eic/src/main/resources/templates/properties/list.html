@@ -12,7 +12,10 @@
 <main>
   <div class="page-head">
     <h1>Property Management</h1>
-    <a class="button" th:href="@{/properties/new}">Create Property</a>
+    <div>
+      <a class="button" th:href="@{/properties/new}">Create Property</a>
+      <a th:href="@{/locations}" class="button">Location Management</a>
+    </div>
   </div>
 
   <div class="banner success" role="status" th:if="${successMessage}" th:text="${successMessage}"></div>

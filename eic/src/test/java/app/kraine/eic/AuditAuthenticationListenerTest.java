@@ -16,7 +16,11 @@ import org.springframework.security.authentication.event.AuthenticationFailureLo
 import org.springframework.security.authentication.event.AuthenticationSuccessEvent;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
- 
+
+import app.kraine.eic.audit.AuditAuthenticationListener;
+import app.kraine.eic.audit.AuditEventType;
+import app.kraine.eic.audit.AuditService;
+
 import java.util.List;
  
 import static org.mockito.Mockito.verify;

@@ -28,7 +28,7 @@ public final class AuditCsv {
         writer.flush();
     }
 
-    static String cell(String value) {
+    public static String cell(String value) {
         String text = value == null ? "" : value;
         // A cell that starts with = + - @ is run as a formula by Excel and others (CSV injection).
         if (!text.isEmpty() && "=+-@\t\r".indexOf(text.charAt(0)) >= 0) {

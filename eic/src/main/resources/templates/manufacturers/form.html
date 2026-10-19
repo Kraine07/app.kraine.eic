@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title th:text="${editing} ? 'Update Manufacturer' : 'Create Manufacturer'">Manufacturer</title>
+  <style th:replace="~{dashboard :: styles}"></style>
+</head>
+<body>
+<header th:replace="~{dashboard:: topbar}"></header>
+
+<main>
+  <h1 th:text="${editing} ? 'Update Manufacturer' : 'Create Manufacturer'">Create Manufacturer</h1>
+
+  <form class="panel" method="post" novalidate
+        th:action="${editing} ? @{/manufacturers/{id}(id=${manufacturerId})} : @{/manufacturers}"
+        th:object="${manufacturerForm}">
+
+    <div class="field">
+      <label for="name">Name</label>
+      <input type="text" id="name" th:field="*{name}" autocomplete="off" autofocus
+             th:classappend="${#fields.hasErrors('name')} ? 'invalid'">
+      <p class="error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></p>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit" th:text="${editing} ? 'Update Manufacturer' : 'Submit'">Submit</button>
+      <a class="button secondary" th:href="@{/manufacturers}">Cancel</a>
+    </div>
+  </form>
+</main>
+</body>
+</html>

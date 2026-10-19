@@ -13,7 +13,12 @@ import org.springframework.test.util.ReflectionTestUtils;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
- 
+
+import app.kraine.eic.audit.AuditEvent;
+import app.kraine.eic.audit.AuditEventRepoInterface;
+import app.kraine.eic.audit.AuditEventType;
+import app.kraine.eic.audit.AuditService;
+
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;

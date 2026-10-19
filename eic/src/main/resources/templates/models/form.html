@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title th:text="${editing} ? 'Update Model' : 'Create Model'">Model</title>
+  <style th:replace="~{dashboard:: styles}"></style>
+</head>
+<body>
+<header th:replace="~{dashboard :: topbar}"></header>
+
+<main>
+  <h1 th:text="${editing} ? 'Update Model' : 'Create Model'">Create Model</h1>
+
+  <form class="panel" method="post" novalidate
+        th:action="${editing} ? @{/models/update} : @{/models}" th:object="${modelForm}">
+
+    <!-- Updating: the original manufacturer and description say which model is being edited. -->
+    <th:block th:if="${editing}">
+      <input type="hidden" th:field="*{originalManufacturerId}">
+      <input type="hidden" th:field="*{originalDescription}">
+    </th:block>
+
+    <div class="field">
+      <label for="manufacturerId">Manufacturer</label>
+      <select id="manufacturerId" th:field="*{manufacturerId}"
+              th:classappend="${#fields.hasErrors('manufacturerId')} ? 'invalid'">
+        <option value="">Select a manufacturer</option>
+        <option th:each="m : ${manufacturers}" th:value="${m.id()}" th:text="${m.label()}">Acme</option>
+      </select>
+      <p class="error" th:if="${#fields.hasErrors('manufacturerId')}" th:errors="*{manufacturerId}"></p>
+    </div>
+
+    <div class="field">
+      <label for="description">Description</label>
+      <input type="text" id="description" th:field="*{description}" autocomplete="off"
+             th:classappend="${#fields.hasErrors('description')} ? 'invalid'">
+      <p class="error" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></p>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit">Submit</button>
+      <a class="button secondary" th:href="@{/models}">Cancel</a>
+    </div>
+  </form>
+</main>
+</body>
+</html>

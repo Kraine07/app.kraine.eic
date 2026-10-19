@@ -34,10 +34,10 @@ import java.util.regex.Pattern;
 @Service
 public class AuditService {
 
-    static final int MAX_FIELD = 255;
-    static final int MAX_DETAILS = 500;
+    public static final int MAX_FIELD = 255;
+    public static final int MAX_DETAILS = 500;
     /** UA-26: events are kept for at least a year. */
-    static final int MIN_RETENTION_DAYS = 365;
+    public static final int MIN_RETENTION_DAYS = 365;
 
     private static final Pattern EMAIL = Pattern.compile("^[^@\\s]+@[^@\\s]+\\.[^@\\s]+$");
     private static final Sort NEWEST_FIRST = Sort.by(Sort.Direction.DESC, "occurredAt")

@@ -1,20 +1,24 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.thymeleaf.org">
-<head><title>Shared fragments</title></head>
+<head>
+  <link rel="icon" th:href="@{/images/favicon.png}">
+  <title>Dashboard</title>
+</head>
 <body>
 
 <!-- Include in <head>:  <style th:replace="~{fragments/base :: styles}"></style> -->
 <style th:fragment="styles">
-  :root { --ink: #1b1f24; --muted: #4a5360; --line: #d5d9df; --bg: #bbbbbb; --brand: #0b5cad;
+  :root { --ink: #1b1f24; --muted: #4a5360; --line: #d5d9df; --bg: #ffffff; --brand: #0b5cad;
           --danger: #b3261e; --ok: #1b6b2f; }
   * { box-sizing: border-box; }
   body { font-family: system-ui, sans-serif; margin: 0; color: var(--ink); background: var(--bg); }
-  .topbar { display: flex; align-items: center; gap: 1.5rem; padding: .75rem 1.5rem; background: #fff;
+  .topbar { display: flex; align-items: center; justify-content: space-between; gap: 1.5rem; padding: .75rem 1.5rem; background: #fff;
             border-bottom: 1px solid var(--line); }
   .topbar .brand { font-weight: 700; margin-right: auto; }
-  .topbar a { color: var(--ink); text-decoration: none; }
-  .topbar a:hover { text-decoration: underline; }
-  .topbar form { margin: 0; }
+  .topbar a { color: var(--ink); text-decoration: none; font-weight: bold;}
+  .topbar a:hover {  color: #e77000; }
+  .topbar form { margin: 0 24px; }
+  .topbar form button{display:flex; align-items: center; font-style: italic; text-decoration: none;}
   main { max-width: 64rem; margin: 2rem auto; padding: 0 1rem; }
   h1 { margin: 0 0 1rem; }
   .page-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
@@ -26,7 +30,7 @@
   .card { background: #c4c4c4; border: 1px solid var(--line); border-radius: 6px; padding: 1rem; }
   .card .value { font-size: 1.75rem; font-weight: 700; }
   .card .label { color: var(--muted); }
-  table { width: 100%; border-collapse: collapse; background: #adadad; border: 1px solid var(--line); }
+  table { width: 100%; border-collapse: collapse; background: #ffffff; border: 1px solid var(--line); }
   th, td { text-align: left; padding: .65rem .75rem; border-bottom: 1px solid var(--line); }
   th { background: #eef1f4; font-size: .9rem; }
   .table-wrap { overflow-x: auto; }
@@ -54,24 +58,41 @@
   dialog::backdrop { background: rgba(0, 0, 0, .4); }
   dialog h2 { margin-top: 0; }
   .dialog-actions { display: flex; justify-content: flex-end; gap: .75rem; margin-top: 1.25rem; }
-  button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible { outline: 3px solid #f2b300; outline-offset: 2px; }
+  button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible { outline: 3px solid #f2b300; outline-offset: 2px;}
+  .logo{width: 400px; aspect-ratio: 5/1; object-fit:cover;}
+  .welcome{ margin:0 auto; width: 70%;}
+  .welcome img{width: 100%;}
+
 </style>
 
 <!-- Include at the top of <body>:  <header th:replace="~{fragments/base :: topbar}"></header> -->
 <header class="topbar" th:fragment="topbar">
-  <span class="brand">Equipment Inventory</span>
+  <!--<a th:href="@{/dashboard}"><span class="brand">Equipment Inventory</span></a> -->
+  <a th:href="@{/dashboard}">
+    <img class="logo" th:src="@{/images/logo.png}">
+  </a>
+
   <nav aria-label="Main" style="display:flex; gap:1.25rem;">
     <a th:href="@{/equipment}">Equipment</a>
+    <a th:href="@{/properties}">Property</a>
+    <a th:href="@{/manufacturers}">Manufacturer</a>
     <a th:href="@{/users}">Users</a>
-    <a th:href="@{/audit}">Audit Logs</a>
-  </nav>
+    <a th:href="@{/audit}">Audit</a>
   <form th:action="@{/logout}" method="post">
     <button type="submit" class="linklike">
-      <span th:text="${firstName}"></span>
-      <span th:text="${lastName}"></span>
+      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-round preview-icon"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>
+      <span th:text="${authUser.firstName}"></span>
     </button>
   </form>
+  </nav>
 </header>
+
+<section class="welcome">
+  <h2>Welcome to the Equipment Inventory Admin Panel</h2>
+  <img th:src="@{/images/soft-serve.png}" alt="soft-serve machine">
+  <p>
+    This dashboard is designed to give you full control over managing your organization’s equipment records with ease and efficiency. From tracking assets to monitoring availability and updating details, everything you need is right at your fingertips. Our goal is to simplify inventory management, reduce errors, and provide clear insights so you can focus on keeping operations running smoothly.</p>
+</section>
 
 <!-- Confirmation window (UC-04 step 5, UC-05 step 5, UC-06 step 3). Put once near the end of <body>. -->
 <dialog id="confirmDialog" th:fragment="confirmDialog" aria-labelledby="confirmTitle">
@@ -84,7 +105,7 @@
 </dialog>
 
 <!-- Buttons opt in with data-confirm-form (id of the form to submit), data-confirm-title,
-     data-confirm-message, data-confirm-label and, optionally, data-action (the URL to post to). -->
+    data-confirm-message, data-confirm-label and, optionally, data-action (the URL to post to). -->
 <script th:fragment="confirmScript">
   (function () {
     var dialog = document.getElementById('confirmDialog');

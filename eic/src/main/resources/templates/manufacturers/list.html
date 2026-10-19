@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Manufacturer Management</title>
+  <style th:replace="~{dashboard :: styles}"></style>
+</head>
+<body>
+<header th:replace="~{dashboard :: topbar}"></header>
+
+<main>
+  <div class="page-head">
+    <h1>Manufacturer Management</h1>
+    <div>
+      <a class="button" th:href="@{/manufacturers/new}">Add Manufacturer</a>
+      <a class="button" th:href="@{/models}">Model Management</a>
+    </div>
+  </div>
+
+  <div class="banner success" role="status" th:if="${successMessage}" th:text="${successMessage}"></div>
+  <div class="banner error" role="alert" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+
+  <label for="filter" class="hint">Filter manufacturers</label>
+  <input type="text" id="filter" class="filter" placeholder="Name">
+
+  <p th:if="${#lists.isEmpty(manufacturers)}">No manufacturers yet.</p>
+
+  <div class="table-wrap" th:unless="${#lists.isEmpty(manufacturers)}">
+    <table id="manufacturerTable">
+      <thead>
+        <tr><th>Name</th><th>Actions</th></tr>
+      </thead>
+      <tbody>
+        <tr th:each="m : ${manufacturers}">
+          <td th:text="${m.name()}">Acme</td>
+          <td>
+            <div class="actions">
+              <a class="button secondary" th:href="@{/manufacturers/{id}/edit(id=${m.id()})}">Edit</a>
+              <button type="button" class="danger"
+                      data-confirm-form="deleteForm"
+                      th:data-action="@{/manufacturers/{id}/delete(id=${m.id()})}"
+                      data-confirm-title="Delete this manufacturer?"
+                      th:data-confirm-message="'Delete ' + ${m.name()} + '? This cannot be undone.'"
+                      data-confirm-label="Yes">Delete</button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Posted by the confirmation window; the button supplies the URL. -->
+  <form id="deleteForm" method="post" th:action="@{/manufacturers}"></form>
+</main>
+
+<dialog th:replace="~{dashboard :: confirmDialog}"></dialog>
+<script th:replace="~{dashboard :: confirmScript}"></script>
+<script>
+  document.getElementById('filter').addEventListener('input', function (event) {
+    var text = event.target.value.toLowerCase();
+    document.querySelectorAll('#manufacturerTable tbody tr').forEach(function (row) {
+      row.hidden = text !== '' && row.textContent.toLowerCase().indexOf(text) === -1;
+    });
+  });
+</script>
+</body>
+</html>

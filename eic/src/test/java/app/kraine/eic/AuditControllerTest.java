@@ -12,7 +12,14 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.mock.web.MockHttpServletResponse;
 import org.springframework.ui.ConcurrentModel;
 import org.springframework.ui.Model;
- 
+
+import app.kraine.eic.audit.AuditController;
+import app.kraine.eic.audit.AuditEvent;
+import app.kraine.eic.audit.AuditEventType;
+import app.kraine.eic.audit.AuditFilter;
+import app.kraine.eic.audit.AuditService;
+import app.kraine.eic.audit.AuditViews.AuditPageView;
+
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneOffset;

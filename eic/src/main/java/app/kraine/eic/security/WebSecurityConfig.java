@@ -52,6 +52,6 @@ public class WebSecurityConfig {
         return configuration.getAuthenticationManager();
     }
 
-    
+
 
 }

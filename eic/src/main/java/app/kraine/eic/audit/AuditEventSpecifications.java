@@ -34,7 +34,7 @@ public final class AuditEventSpecifications {
     }
 
     /** So that % and _ typed by the Administrator are searched for, not treated as wildcards. */
-    static String escapeLike(String text) {
+    public static String escapeLike(String text) {
         return text.replace("\\", "\\\\").replace("%", "\\%").replace("_", "\\_");
     }
 }

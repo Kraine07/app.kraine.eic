@@ -9,7 +9,6 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.dao.DataIntegrityViolationException;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -63,7 +62,8 @@ public class UserService {
      * The lock covers one application instance; with several instances use a database lock instead.
      */
 
-    private final ReentrantLock administratorLock;
+
+    private Lock administratorLock = new ReentrantLock();
 
     @PostConstruct
     void warnWhenPropertyLinksAreMissing() {
