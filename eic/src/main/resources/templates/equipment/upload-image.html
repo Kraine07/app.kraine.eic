@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Upload image</title>
+  <style>
+    body { font-family: system-ui, sans-serif; margin: 0; color: #1b1f24; background: #f6f7f9; }
+    main { max-width: 32rem; margin: 3rem auto; padding: 0 1rem; }
+    form { background: #fff; border: 1px solid #d5d9df; border-radius: 6px; padding: 1.5rem; }
+    label { display: block; font-weight: 600; margin-bottom: .5rem; }
+    input[type=file] { width: 100%; margin-bottom: 1.25rem; }
+    .hint { color: #4a5360; margin: 0 0 1rem; }
+    .error { background: #fdecea; border: 1px solid #c62828; color: #7f1d1d;
+             padding: .75rem 1rem; border-radius: 6px; margin-bottom: 1rem; }
+    .actions { display: flex; gap: 1rem; align-items: center; }
+    button { background: #0b5cad; color: #fff; border: 0; border-radius: 4px;
+             padding: .6rem 1.25rem; font-size: 1rem; cursor: pointer; }
+    button:focus-visible, input:focus-visible, a:focus-visible { outline: 3px solid #f2b300; outline-offset: 2px; }
+  </style>
+</head>
+<body>
+<main>
+  <h1>Upload image</h1>
+  <p class="hint" th:text="${limits}">Allowed file types: JPEG, PNG. Maximum file size: 5 MB.</p>
+
+  <div class="error" role="alert" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+
+  <form th:action="@{/equipment/{id}/image(id=${equipmentId})}" method="post" enctype="multipart/form-data">
+    <label for="image">Image file</label>
+    <input type="file" id="image" name="image" th:accept="${accept}" required>
+    <div class="actions">
+      <button type="submit">Submit</button>
+      <a th:href="@{/equipment/{id}(id=${equipmentId})}">Cancel</a>
+    </div>
+  </form>
+</main>
+</body>
+</html>

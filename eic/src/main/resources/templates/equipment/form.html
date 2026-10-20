@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title th:text="${editing} ? 'Update Equipment' : 'Create Equipment'">Equipment</title>
+  <style th:replace="~{dashboard :: styles}"></style>
+  <style>
+    input[type=month] { width: 100%; padding: .55rem .65rem; font-size: 1rem; border: 1px solid #8a93a0;
+                        border-radius: 4px; background: #fff; }
+    input[type=month].invalid { border-color: var(--danger); background: #fdf3f2; }
+  </style>
+</head>
+<body>
+<header th:replace="~{dashboard :: topbar}"></header>
+
+<main>
+  <h1 th:text="${editing} ? 'Update Equipment' : 'Create Equipment'">Create Equipment</h1>
+
+  <form class="panel" method="post" novalidate
+        th:action="${editing} ? @{/equipment/{id}(id=${equipmentId})} : @{/equipment}" th:object="${equipmentForm}">
+
+    <div class="field">
+      <label for="serialNumber">Serial number</label>
+      <input type="text" id="serialNumber" th:field="*{serialNumber}" autocomplete="off"
+             th:classappend="${#fields.hasErrors('serialNumber')} ? 'invalid'">
+      <p class="hint">Optional. Must be unique when given.</p>
+      <p class="error" th:if="${#fields.hasErrors('serialNumber')}" th:errors="*{serialNumber}"></p>
+    </div>
+
+    <div class="field">
+      <label for="manufacturedDate">Manufactured date</label>
+      <input type="month" id="manufacturedDate" th:field="*{manufacturedDate}"
+             th:classappend="${#fields.hasErrors('manufacturedDate')} ? 'invalid'">
+      <p class="hint">Optional.</p>
+      <p class="error" th:if="${#fields.hasErrors('manufacturedDate')}" th:errors="*{manufacturedDate}"></p>
+    </div>
+
+    <div class="field">
+      <label for="modelKey">Model</label>
+      <select id="modelKey" th:field="*{modelKey}" th:classappend="${#fields.hasErrors('modelKey')} ? 'invalid'">
+        <option value="">Select a model</option>
+        <option th:each="m : ${models}" th:value="${m.key()}" th:text="${m.label()}">Acme / X100</option>
+      </select>
+      <p class="error" th:if="${#fields.hasErrors('modelKey')}" th:errors="*{modelKey}"></p>
+    </div>
+
+    <div class="field">
+      <label for="locationKey">Location</label>
+      <select id="locationKey" th:field="*{locationKey}" th:classappend="${#fields.hasErrors('locationKey')} ? 'invalid'">
+        <option value="">Select a location</option>
+        <option th:each="l : ${locations}" th:value="${l.key()}" th:text="${l.label()}">North Site / Store</option>
+      </select>
+      <p class="hint" th:if="${#lists.isEmpty(locations)}">
+        There are no locations you can use yet. Create a location first, or ask an Administrator to assign you a property.
+      </p>
+      <p class="error" th:if="${#fields.hasErrors('locationKey')}" th:errors="*{locationKey}"></p>
+    </div>
+
+    <div class="form-actions">
+      <button type="submit">Submit</button>
+      <a class="button secondary" th:href="${editing} ? @{/equipment/{id}(id=${equipmentId})} : @{/equipment}">Cancel</a>
+    </div>
+  </form>
+</main>
+</body>
+</html>

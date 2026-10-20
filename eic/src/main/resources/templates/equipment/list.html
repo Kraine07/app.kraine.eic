@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Equipment Management</title>
+  <style th:replace="~{dashboard :: styles}"></style>
+  <style>
+    .search { display: flex; gap: .75rem; align-items: end; margin-bottom: 1rem; flex-wrap: wrap; }
+    .search .field { margin: 0; flex: 1; min-width: 14rem; }
+    .pager { display: flex; align-items: center; gap: 1rem; margin-top: 1rem; }
+  </style>
+</head>
+<body>
+<header th:replace="~{dashboard :: topbar}"></header>
+
+<main>
+  <div class="page-head">
+    <h1>Equipment Management</h1>
+    <a class="button" th:href="@{/equipment/new}">Create Equipment</a>
+  </div>
+
+  <div class="banner success" role="status" th:if="${successMessage}" th:text="${successMessage}"></div>
+  <div class="banner error" role="alert" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+
+  <form class="search" method="get" th:action="@{/equipment}">
+    <div class="field">
+      <label for="q">Search</label>
+      <input type="text" id="q" name="q" th:value="${q}" autocomplete="off"
+             placeholder="Serial number, manufacturer, model, property or location">
+    </div>
+    <button type="submit">Search</button>
+    <a class="button secondary" th:if="${q != ''}" th:href="@{/equipment}">Clear</a>
+  </form>
+
+  <p th:if="${#lists.isEmpty(results.rows())}">
+    <span th:if="${q == ''}">No equipment yet.</span>
+    <span th:unless="${q == ''}">No equipment matches your search.</span>
+  </p>
+
+  <div class="table-wrap" th:unless="${#lists.isEmpty(results.rows())}">
+    <table>
+      <thead>
+        <tr><th>Serial number</th><th>Manufacturer / Model</th><th>Property / Location</th><th>Manufactured</th><th>Actions</th></tr>
+      </thead>
+      <tbody>
+        <tr th:each="e : ${results.rows()}">
+          <td>
+            <a th:href="@{/equipment/{id}(id=${e.id()})}"
+               th:text="${e.serialNumber() != null} ? ${e.serialNumber()} : 'No serial number'">SN-1001</a>
+          </td>
+          <td th:text="${e.manufacturerName()} + ' / ' + ${e.modelDescription()}">Acme / X100</td>
+          <td th:text="${e.propertyName()} + ' / ' + ${e.locationName()}">North Site / Store</td>
+          <td th:text="${e.manufacturedDate() != null} ? ${e.manufacturedDate()} : ''">2020-05</td>
+          <td>
+            <div class="actions">
+              <a class="button secondary" th:href="@{/equipment/{id}/edit(id=${e.id()})}">Edit</a>
+              <button type="button" class="danger"
+                      data-confirm-form="deleteForm"
+                      th:data-action="@{/equipment/{id}/delete(id=${e.id()})}"
+                      data-confirm-title="Delete this equipment?"
+                      th:data-confirm-message="'Delete ' + (${e.serialNumber() != null} ? ${e.serialNumber()} : ${e.modelDescription()}) + '? Its image, if it has one, is deleted too. This cannot be undone.'"
+                      data-confirm-label="Yes">Delete</button>
+            </div>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <nav class="pager" aria-label="Pages" th:if="${results.totalPages() > 1}">
+    <a class="button secondary" th:if="${results.hasPrevious()}"
+       th:href="@{/equipment(q=${q},page=${results.page() - 1})}">Previous</a>
+    <span>
+      Page <span th:text="${results.displayPage()}">1</span> of <span th:text="${results.totalPages()}">1</span>
+      (<span th:text="${results.totalElements()}">0</span> items)
+    </span>
+    <a class="button secondary" th:if="${results.hasNext()}"
+       th:href="@{/equipment(q=${q},page=${results.page() + 1})}">Next</a>
+  </nav>
+
+  <!-- Posted by the confirmation window; the button supplies the URL. -->
+  <form id="deleteForm" method="post" th:action="@{/equipment}"></form>
+</main>
+
+<dialog th:replace="~{dashboard :: confirmDialog}"></dialog>
+<script th:replace="~{dashboard :: confirmScript}"></script>
+</body>
+</html>

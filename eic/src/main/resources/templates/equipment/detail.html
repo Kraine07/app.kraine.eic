@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Equipment details</title>
+  <style th:replace="~{dashboard :: styles}"></style>
+  <style>
+    dl.details { display: grid; grid-template-columns: max-content 1fr; gap: .6rem 1.5rem; margin: 0 0 1.5rem; }
+    dl.details dt { font-weight: 600; }
+    dl.details dd { margin: 0; overflow-wrap: anywhere; }
+  </style>
+</head>
+<body>
+<header th:replace="~{dashboard :: topbar}"></header>
+
+<main>
+  <div class="page-head">
+    <h1 th:text="${equipment.serialNumber() != null} ? ${equipment.serialNumber()} : 'Equipment details'">Equipment details</h1>
+    <a class="button secondary" th:href="@{/equipment}">Back to equipment</a>
+  </div>
+
+  <!-- The image upload (UC-29) redirects back here with its confirmation or error message. -->
+  <div class="banner success" role="status" th:if="${successMessage}" th:text="${successMessage}"></div>
+  <div class="banner error" role="alert" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+
+  <section class="panel" style="max-width:40rem">
+    <dl class="details">
+      <dt>Serial number</dt>
+      <dd th:text="${equipment.serialNumber() != null} ? ${equipment.serialNumber()} : 'Not set'">SN-1001</dd>
+      <dt>Manufacturer</dt>
+      <dd th:text="${equipment.manufacturerName()}">Acme</dd>
+      <dt>Model</dt>
+      <dd th:text="${equipment.modelDescription()}">X100</dd>
+      <dt>Manufactured</dt>
+      <dd th:text="${equipment.manufacturedDate() != null} ? ${equipment.manufacturedDate()} : 'Not set'">2020-05</dd>
+      <dt>Property</dt>
+      <dd th:text="${equipment.propertyName()}">North Site</dd>
+      <dt>Location</dt>
+      <dd th:text="${equipment.locationName()}">Store</dd>
+      <dt>Editor</dt>
+      <dd th:text="${equipment.editorName()}">Ana Silva</dd>
+    </dl>
+
+    <h2 style="font-size:1.1rem">Image</h2>
+    <div th:if="${equipment.imageName() == null}">
+      <p>This equipment has no image yet.</p>
+      <a class="button" th:href="@{/equipment/{id}/image/upload(id=${equipment.id()})}">Upload Image</a>
+    </div>
+    <p th:unless="${equipment.imageName() == null}">
+      Image: <strong th:text="${equipment.imageName()}">front.png</strong>
+    </p>
+
+    <div class="form-actions" style="margin-top:2rem">
+      <a class="button" th:href="@{/equipment/{id}/edit(id=${equipment.id()})}">Edit</a>
+      <button type="button" class="danger"
+              data-confirm-form="deleteForm"
+              th:data-action="@{/equipment/{id}/delete(id=${equipment.id()})}"
+              data-confirm-title="Delete this equipment?"
+              data-confirm-message="Its image, if it has one, is deleted too. This cannot be undone."
+              data-confirm-label="Yes">Delete</button>
+    </div>
+  </section>
+
+  <form id="deleteForm" method="post" th:action="@{/equipment}"></form>
+</main>
+
+<dialog th:replace="~{dashboard :: confirmDialog}"></dialog>
+<script th:replace="~{dashboard :: confirmScript}"></script>
+</body>
+</html>
