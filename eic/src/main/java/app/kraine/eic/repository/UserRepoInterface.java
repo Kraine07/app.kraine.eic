@@ -17,8 +17,7 @@ import jakarta.transaction.Transactional;
 public interface UserRepoInterface extends JpaRepository<User, Long> {
 
     @Query("SELECT u FROM User u " +
-        "LEFT JOIN FETCH u.role "
-    )
+        "LEFT JOIN FETCH u.role ")
     List<User> findAllWithDetails();
 
     User findByEmail(String email);
@@ -36,5 +35,9 @@ public interface UserRepoInterface extends JpaRepository<User, Long> {
     @Query("SELECT COUNT(u) FROM User u WHERE u.role.roleType = :roleType AND u.isSuspended = :isSuspended")
     long countByRoleTypeAndStatus(@Param("roleType") RoleType roleType, @Param("isSuspended") boolean isSuspended);
 
-    List<User> findActiveByRoleRoleType(RoleType roleType);
+
+    @Query("SELECT u FROM User u WHERE u.role.roleType = :roleType AND u.isSuspended = false " + "ORDER BY u.lastName, u.firstName")
+    List<User> findActiveByRoleType(@Param("roleType") RoleType roleType);
+
+
 }

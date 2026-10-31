@@ -35,15 +35,15 @@ import org.springframework.security.core.Authentication;
 @RequiredArgsConstructor
 public class LoginController {
 
-    static final String LOGIN_VIEW = "login";
-    static final String SIGNED_IN_URL = "redirect:/dashboard";
+    public static final String LOGIN_VIEW = "login";
+    public static final String SIGNED_IN_URL = "redirect:/dashboard";
 
-    static final String BAD_CREDENTIALS = "Email or password is incorrect.";
-    static final String SUSPENDED = "This account is suspended. Contact an Administrator.";
-    static final String ATTEMPTS_EXHAUSTED =
+    public static final String BAD_CREDENTIALS = "Email or password is incorrect.";
+    public static final String SUSPENDED = "This account is suspended. Contact an Administrator.";
+    public static final String ATTEMPTS_EXHAUSTED =
             "Too many failed login attempts. Your account has been suspended. Contact an Administrator.";
-    static final String FAILED = "Sign-in failed. Try again later.";
-    static final String CHANGE_PASSWORD_URL = "redirect:/change-password";
+    public static final String FAILED = "Sign-in failed. Try again later.";
+    public static final String CHANGE_PASSWORD_URL = "redirect:/change-password";
 
     private final LoginService loginService;
 

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Editor Equipment report</title>
+  <style th:replace="~{dashboard :: styles}"></style>
+  <style>
+    .chooser { display: flex; gap: .75rem; align-items: end; flex-wrap: wrap; background: #fff;
+               border: 1px solid var(--line); border-radius: 6px; padding: 1rem; margin-bottom: 1.5rem; }
+    .chooser .field { margin: 0; flex: 1; min-width: 16rem; }
+    .report-head { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; flex-wrap: wrap; }
+    .meta { color: var(--muted); font-size: .9rem; }
+  </style>
+</head>
+<body>
+<header th:replace="~{dashboard :: topbar}"></header>
+
+<main>
+  <div class="page-head">
+    <h1>Editor Equipment</h1>
+    <a class="button secondary" th:href="@{/reports}">All reports</a>
+  </div>
+
+  <div class="banner error" role="alert" th:if="${errorMessage}" th:text="${errorMessage}"></div>
+
+  <form class="chooser" method="get" th:action="@{/reports/editor-equipment}">
+    <div class="field">
+      <label for="editorId">Editor</label>
+      <select id="editorId" name="editorId">
+        <option value="">Select an editor</option>
+        <option th:each="e : ${editors}" th:value="${e.id()}" th:text="${e.label()}"
+                th:selected="${selectedEditorId != null and e.id() == selectedEditorId}">Ana Silva</option>
+      </select>
+    </div>
+    <button type="submit" name="generate" value="true">Generate</button>
+  </form>
+
+  <section th:if="${report != null}" aria-labelledby="reportTitle">
+    <div class="report-head">
+      <h2 id="reportTitle" style="margin:0 0 .75rem">
+        Equipment assigned to <span th:text="${report.editorName()}">Ana Silva</span>
+      </h2>
+      <p class="meta">
+        <span th:text="${#lists.size(report.rows())}">0</span> item(s). Generated <span th:text="${report.generatedAt()}">2026-10-24 12:00:00 UTC</span>.
+      </p>
+    </div>
+
+    <p th:unless="${#lists.isEmpty(report.rows())}" style="margin:0 0 1rem">
+      <a class="button secondary" th:href="@{/reports/editor-equipment.csv(editorId=${selectedEditorId})}">Export</a>
+    </p>
+    <p th:if="${#lists.isEmpty(report.rows())}">
+      No equipment is assigned to <span th:text="${report.editorName()}">this editor</span>.
+      Choose another editor and generate the report again.
+    </p>
+
+    <div class="table-wrap" th:unless="${#lists.isEmpty(report.rows())}">
+      <table>
+        <thead>
+          <tr><th>Serial number</th><th>Manufacturer</th><th>Model</th><th>Manufactured</th><th>Property</th><th>Location</th></tr>
+        </thead>
+        <tbody>
+          <tr th:each="e : ${report.rows()}">
+            <td th:text="${e.serialNumber() != null} ? ${e.serialNumber()} : 'Not set'">SN-1001</td>
+            <td th:text="${e.manufacturerName()}">Acme</td>
+            <td th:text="${e.modelDescription()}">X100</td>
+            <td th:text="${e.manufacturedDate() != null} ? ${e.manufacturedDate()} : ''">2020-05</td>
+            <td th:text="${e.propertyName()}">North Site</td>
+            <td th:text="${e.locationName()}">Store</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</main>
+</body>
+</html>

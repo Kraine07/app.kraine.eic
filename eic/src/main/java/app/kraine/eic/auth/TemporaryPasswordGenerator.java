@@ -11,7 +11,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class TemporaryPasswordGenerator {
 
-    static final int LENGTH = 12;
+    public static final int LENGTH = 12;
 
     private static final String UPPER = "ABCDEFGHJKLMNPQRSTUVWXYZ";
     private static final String LOWER = "abcdefghijkmnopqrstuvwxyz";

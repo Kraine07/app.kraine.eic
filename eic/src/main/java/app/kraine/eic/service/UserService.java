@@ -240,7 +240,7 @@ public class UserService {
     }
 
     /** eg. ADMINISTRATOR becomes "Administrator". */
-    static String label(Enum<?> value) {
+    public static String label(Enum<?> value) {
         String text = value.name().replace('_', ' ').toLowerCase(Locale.ROOT);
         return Character.toUpperCase(text.charAt(0)) + text.substring(1);
     }

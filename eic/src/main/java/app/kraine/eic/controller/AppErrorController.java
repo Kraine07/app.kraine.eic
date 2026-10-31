@@ -40,6 +40,7 @@ public class AppErrorController implements ErrorController {
         model.addAttribute("error", HttpStatus.valueOf(status).getReasonPhrase());
         model.addAttribute("path", requestedPath(request));
         model.addAttribute("timestamp", new Date());
+    log.error(HttpStatus.valueOf(status).getReasonPhrase());
         return ERROR_VIEW;
     }
  

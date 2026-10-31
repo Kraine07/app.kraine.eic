@@ -61,6 +61,13 @@ public class EquipmentImageService {
         }
     }
 
+
+    /** The equipment's image with its bytes, if it has one. */
+    @Transactional(readOnly = true)
+    public Optional<EquipmentImage> findImage(Long equipmentId) {
+        return imageRepository.findByEquipmentId(equipmentId);
+    }
+
     /** Id and name of the equipment's image, if it has one. Does not load the image bytes. */
     @Transactional(readOnly = true)
     public Optional<EquipmentImageRepository.ImageInfo> findImageInfo(Long equipmentId) {
@@ -113,7 +120,7 @@ public class EquipmentImageService {
         return new InvalidImageException(reason + " " + limitsDescription());
     }
 
-    private static String detectContentType(byte[] d) {
+    public static String detectContentType(byte[] d) {
         if (startsWith(d, 0xFF, 0xD8, 0xFF)) {
             return "image/jpeg";
         }

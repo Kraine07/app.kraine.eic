@@ -20,22 +20,26 @@ import app.kraine.eic.repository.ModelRepoInterface;
 public class EquipmentLinkConfig {
  
     @Bean
+    public
     PropertyEquipmentLinks propertyEquipmentLinks(EquipmentRepoInterface equipment) {
         return equipment::existsByLocationPropertyId;
     }
  
     @Bean
+    public
     LocationEquipmentLinks locationEquipmentLinks(EquipmentRepoInterface equipment) {
         return equipment::existsByLocationPropertyIdAndLocationName;
     }
  
     @Bean
+    public
     ModelEquipmentLinks modelEquipmentLinks(EquipmentRepoInterface equipment) {
         return equipment::existsByModelManufacturerIdAndModelDescription;
     }
  
     /** A manufacturer is in use when it has models, or when equipment uses one of its models. */
     @Bean
+    public
     ManufacturerEquipmentLinks manufacturerEquipmentLinks(EquipmentRepoInterface equipment, ModelRepoInterface models) {
         return manufacturerId -> models.existsByManufacturerId(manufacturerId)
                 || equipment.existsByModelManufacturerId(manufacturerId);

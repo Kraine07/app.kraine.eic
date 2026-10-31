@@ -35,6 +35,10 @@ public final class EquipmentViews {
  
     public record EquipmentEditData(Long id, EquipmentForm form) {
     }
+
+    /** The stored image, ready to be sent to the browser. */
+    public record ImageContent(String contentType, byte[] data) {
+    }
  
     /** One entry of the model or location drop-down; [key] comes from CompositeKeys. */
     public record Option(String key, String label) {

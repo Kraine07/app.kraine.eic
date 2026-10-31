@@ -4,6 +4,9 @@ package app.kraine.eic.controller;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.http.CacheControl;
+import org.springframework.http.ResponseEntity;
+import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
@@ -25,6 +28,7 @@ import app.kraine.eic.exception.EquipmentInUseException;
 import app.kraine.eic.exception.InvalidEquipmentReferenceException;
 import app.kraine.eic.form.EquipmentForm;
 import app.kraine.eic.service.EquipmentService;
+import java.time.Duration;
  
 /**
  * The 'Equipment management' screen (EQM-1 to EQM-4): list, details, create, update and delete.
@@ -64,6 +68,26 @@ public class EquipmentController {
         model.addAttribute("equipment", equipmentService.findDetail(id, authentication.getName()));
         return DETAIL_VIEW;
     }
+
+
+
+    
+    /**
+     * The picture shown on the details page, sent inline so that an img tag can use it. Anyone who may not
+     * see the equipment gets a 403, and equipment without an image gets a 404.
+     */
+    @GetMapping("/{id}/image/content")
+    public ResponseEntity<byte[]> imageContent(@PathVariable Long id, Authentication authentication) {
+        return equipmentService.findImageContent(id, authentication.getName())
+                .map(image -> ResponseEntity.ok()
+                        .contentType(MediaType.parseMediaType(image.contentType()))
+                        .cacheControl(CacheControl.maxAge(Duration.ofMinutes(5)).cachePrivate())
+                        .header("X-Content-Type-Options", "nosniff")
+                        .body(image.data()))
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+
  
     // ------------------------------------------------------------------ create (UC-23)
  

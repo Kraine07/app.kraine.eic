@@ -82,11 +82,11 @@ public class UserController {
  
     @PostMapping("/{id}")
     public String update(@PathVariable Long id,
-                         @Valid @ModelAttribute("userForm") UserForm form,
-                         BindingResult result,
-                         Model model,
-                         RedirectAttributes redirect,
-                         Authentication authentication) {
+                        @Valid @ModelAttribute("userForm") UserForm form,
+                        BindingResult result,
+                        Model model,
+                        RedirectAttributes redirect,
+                        Authentication authentication) {
         if (!result.hasErrors()) {
             try {
                 userService.updateUser(id, form, authentication.getName());

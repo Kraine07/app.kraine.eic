@@ -27,6 +27,7 @@ public class SetupController {
 
     private final FirstRunService firstRunService;
     private final SetupFormValidator setupFormValidator;
+    private final String LOGIN_VIEW ="redirect:/login";
 
     @InitBinder("setupForm")
     void initBinder(WebDataBinder binder) {
@@ -34,7 +35,7 @@ public class SetupController {
     }
 
 
-    @GetMapping
+    @GetMapping("/setup")
     public String showForm(Model model) {
         // alternative flow: if users already exist, redirect to login page
         if (!firstRunService.isSetupRequired()) {
@@ -47,7 +48,7 @@ public class SetupController {
     @PostMapping("/setup")
     public String createAdministrator(@Valid @ModelAttribute("setupForm") SetupForm form, BindingResult result, RedirectAttributes redirect) {
         if (!firstRunService.isSetupRequired()) {
-            return "login";
+            return LOGIN_VIEW;
         }
         if (result.hasErrors()) {
             return "setup"; // alternative flow: invalid fields are highlighted, the user corrects them
@@ -55,9 +56,9 @@ public class SetupController {
         try {
             firstRunService.createFirstAdministrator(form);
         } catch (SetupAlreadyCompletedException ex) {
-            return "login"; // someone else finished setup a moment earlier
+            return LOGIN_VIEW; // someone else finished setup a moment earlier
         }
         redirect.addFlashAttribute("successMessage", "Administrator account created. Sign in to continue.");
-        return "login";
+        return LOGIN_VIEW;
     }
 }

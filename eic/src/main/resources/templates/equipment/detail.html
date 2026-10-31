@@ -9,6 +9,10 @@
     dl.details { display: grid; grid-template-columns: max-content 1fr; gap: .6rem 1.5rem; margin: 0 0 1.5rem; }
     dl.details dt { font-weight: 600; }
     dl.details dd { margin: 0; overflow-wrap: anywhere; }
+    figure.photo { margin: 0 0 1rem; }
+    figure.photo img { display: block; max-width: 100%; max-height: 24rem; object-fit: contain;
+                      background: #fff; border: 1px solid var(--line); border-radius: 6px; }
+    figure.photo figcaption { color: var(--muted); font-size: .9rem; margin-top: .4rem; overflow-wrap: anywhere; }
   </style>
 </head>
 <body>
@@ -47,9 +51,11 @@
       <p>This equipment has no image yet.</p>
       <a class="button" th:href="@{/equipment/{id}/image/upload(id=${equipment.id()})}">Upload Image</a>
     </div>
-    <p th:unless="${equipment.imageName() == null}">
-      Image: <strong th:text="${equipment.imageName()}">front.png</strong>
-    </p>
+    <figure class="photo" th:unless="${equipment.imageName() == null}">
+      <img th:src="@{/equipment/{id}/image/content(id=${equipment.id()})}"
+          th:alt="'Photo of ' + (${equipment.serialNumber() != null} ? ${equipment.serialNumber()} : ${equipment.modelDescription()})">
+      <figcaption th:text="${equipment.imageName()}">front.png</figcaption>
+    </figure>
 
     <div class="form-actions" style="margin-top:2rem">
       <a class="button" th:href="@{/equipment/{id}/edit(id=${equipment.id()})}">Edit</a>

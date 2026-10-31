@@ -23,4 +23,6 @@ public interface PropertyRepoInterface extends JpaRepository<Property, Long> {
 
 
     List<Property> findByUserId(Long id);
+
+    boolean existsByRegionIdAndUserId(Long regionId, Long userId);
 }

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Reports</title>
+  <style th:replace="~{dashboard :: styles}"></style>
+  <style>
+    .report-list { list-style: none; margin: 0; padding: 0; display: grid; gap: 1rem;
+                  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); }
+    .report-list a { display: block; background: #fff; border: 1px solid var(--line); border-radius: 6px;
+                    padding: 1rem 1.25rem; color: var(--ink); text-decoration: none; }
+    .report-list a:hover { border-color: var(--brand); }
+    .report-list strong { display: block; margin-bottom: .25rem; }
+    .report-list span { color: var(--muted); }
+  </style>
+</head>
+<body>
+<header th:replace="~{dashboard :: topbar}"></header>
+
+<main>
+  <h1>Reports</h1>
+
+  <ul class="report-list">
+    <li>
+      <a th:href="@{/reports/editor-equipment}">
+        <strong>Editor Equipment</strong>
+        <span>The equipment at the properties assigned to an editor.</span>
+      </a>
+    </li>
+
+    <li>
+      <a th:href="@{/reports/property-equipment}">
+        <strong>Property Equipment</strong>
+        <span>The equipment placed at the locations of a property.</span>
+      </a>
+    </li>
+
+    <li>
+      <a th:href="@{/reports/region-equipment}">
+        <strong>Region Equipment</strong>
+        <span>All equipment within a region.</span>
+      </a>
+    </li>
+
+    <li>
+      <a th:href="@{/reports/all-equipment}">
+        <strong>All Equipment</strong>
+        <span>Every item you can see, with where it is.</span>
+      </a>
+    </li>
+
+  </ul>
+</main>
+</body>
+</html>

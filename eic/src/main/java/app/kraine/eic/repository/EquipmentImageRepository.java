@@ -15,6 +15,13 @@ public interface EquipmentImageRepository extends JpaRepository<EquipmentImage, 
     @Query("select i.id as id, i.imageName as imageName from EquipmentImage i where i.equipment.id = :equipmentId")
     Optional<ImageInfo> findInfoByEquipmentId(@Param("equipmentId") Long equipmentId);
 
+
+
+    /** The whole image, bytes included. Used to show it on the details page. */
+    Optional<EquipmentImage> findByEquipmentId(Long equipmentId);
+
+
+
     interface ImageInfo {
         Long getId();
 

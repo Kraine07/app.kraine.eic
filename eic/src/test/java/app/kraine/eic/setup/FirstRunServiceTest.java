@@ -1,5 +1,4 @@
-package app.kraine.eic;
-
+package app.kraine.eic.setup;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -11,6 +10,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.transaction.support.TransactionTemplate;
 
+import app.kraine.eic.audit.AuditEventType;
+import app.kraine.eic.audit.AuditService;
 import app.kraine.eic.exception.SetupAlreadyCompletedException;
 import app.kraine.eic.form.SetupForm;
 import app.kraine.eic.model.Role;
@@ -27,22 +28,23 @@ import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
- 
+
 @ExtendWith(MockitoExtension.class)
 class FirstRunServiceTest {
- 
+
     @Mock private UserRepoInterface userRepository;
     @Mock private RoleRepositoryInterface roleRepository;
     @Mock private PasswordEncoder passwordEncoder;
- 
+    @Mock private AuditService auditService;
+
     private FirstRunService service;
- 
+
     @BeforeEach
     void setUp() {
         TransactionTemplate transactions = new TransactionTemplate(mock(PlatformTransactionManager.class));
-        service = new FirstRunService(userRepository, passwordEncoder, roleRepository, transactions, null);
+        service = new FirstRunService(userRepository, passwordEncoder, roleRepository, transactions, auditService);
     }
- 
+
     private static SetupForm form() {
         SetupForm form = new SetupForm();
         form.setFirstName("  Ana ");
@@ -52,80 +54,81 @@ class FirstRunServiceTest {
         form.setConfirmPassword("Str0ng!Pass");
         return form;
     }
- 
+
     private Role givenAdministratorRole() {
         Role role = new Role();
         role.setRoleType(RoleType.ADMINISTRATOR);
         when(roleRepository.findByRoleType(RoleType.ADMINISTRATOR)).thenReturn(role);
         return role;
     }
- 
+
     @Test
     void setupIsRequiredWhenNoUserExists() {
         when(userRepository.count()).thenReturn(0L);
- 
+
         assertTrue(service.isSetupRequired());
     }
- 
+
     @Test
     void setupIsNotRequiredWhenAUserExistsAndTheAnswerIsRemembered() {
         when(userRepository.count()).thenReturn(1L);
- 
+
         assertFalse(service.isSetupRequired());
         assertFalse(service.isSetupRequired());
         verify(userRepository, times(1)).count();
     }
- 
+
     @Test
     void createsAnActiveAdministratorWithAHashedPassword() {
         Role administratorRole = givenAdministratorRole();
         when(userRepository.count()).thenReturn(0L);
         when(passwordEncoder.encode("Str0ng!Pass")).thenReturn("hashed");
         when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
- 
+
         service.createFirstAdministrator(form());
- 
+
         ArgumentCaptor<User> saved = ArgumentCaptor.forClass(User.class);
         verify(userRepository).save(saved.capture());
         User user = saved.getValue();
         assertSame(administratorRole, user.getRole());
-        // assertEquals(UserStatus.ACTIVE, user.getStatus());
+        assertFalse(user.getIsSuspended());
+        assertFalse(user.getIsTemporaryPassword());
         assertEquals("hashed", user.getPassword());
         assertEquals("Ana", user.getFirstName());
         assertEquals("ana@example.com", user.getEmail());
+        verify(auditService).record(AuditEventType.FIRST_ADMIN_CREATED, "ana@example.com", "ana@example.com", null);
     }
- 
+
     @Test
     void setupIsNoLongerRequiredAfterTheAdministratorIsCreated() {
         givenAdministratorRole();
         when(userRepository.count()).thenReturn(0L);
         when(passwordEncoder.encode(any())).thenReturn("hashed");
         when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
- 
+
         service.createFirstAdministrator(form());
- 
+
         assertFalse(service.isSetupRequired());
         verify(userRepository, times(1)).count(); // not asked again
     }
- 
+
     @Test
     void refusesToCreateAnAdministratorWhenAUserAlreadyExists() {
         when(userRepository.count()).thenReturn(1L);
- 
+
         assertThrows(SetupAlreadyCompletedException.class, () -> service.createFirstAdministrator(form()));
         verify(userRepository, never()).save(any());
     }
- 
+
     @Test
     void failsClearlyWhenTheAdministratorRoleRowIsMissing() {
         when(userRepository.count()).thenReturn(0L);
         when(roleRepository.findByRoleType(RoleType.ADMINISTRATOR)).thenReturn(null);
- 
+
         IllegalStateException ex = assertThrows(IllegalStateException.class,
                 () -> service.createFirstAdministrator(form()));
- 
+
         assertTrue(ex.getMessage().contains("ADMINISTRATOR"));
         verify(userRepository, never()).save(any());
     }
 }
- 

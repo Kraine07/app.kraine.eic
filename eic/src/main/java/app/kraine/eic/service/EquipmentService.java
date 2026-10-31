@@ -16,6 +16,7 @@ import app.kraine.eic.equipmentManagement.CompositeKeys;
 import app.kraine.eic.equipmentManagement.EquipmentRow;
 import app.kraine.eic.equipmentManagement.EquipmentViews.EquipmentDetail;
 import app.kraine.eic.equipmentManagement.EquipmentViews.EquipmentEditData;
+import app.kraine.eic.equipmentManagement.EquipmentViews.ImageContent;
 import app.kraine.eic.equipmentManagement.EquipmentViews.Option;
 import app.kraine.eic.exception.DuplicateSerialNumberException;
 import app.kraine.eic.exception.EquipmentInUseException;
@@ -94,6 +95,25 @@ public class EquipmentService {
                 property.getName(), equipment.getLocation().getName(),
                 editor == null ? "Not assigned" : editor.getFirstName() + " " + editor.getLastName(), imageName);
     }
+
+
+    /**
+     * The equipment's image for the details page. Only someone who may see the equipment may see its
+     * image. The type comes from the bytes themselves, because only the file name and bytes are stored.
+     */
+    @Transactional(readOnly = true)
+    public Optional<ImageContent> findImageContent(Long id, String actorEmail) {
+        User actor = actorOf(actorEmail);
+        Equipment equipment = find(id);
+        assertCanManage(actor, equipment.getLocation().getProperty());
+
+        return imageService.findImage(id).map(image -> {
+            String type = EquipmentImageService.detectContentType(image.getImageData());
+            return new ImageContent(type != null ? type : "application/octet-stream", image.getImageData());
+        });
+    }
+
+
  
     @Transactional(readOnly = true)
     public EquipmentEditData findForEdit(Long id, String actorEmail) {
@@ -265,7 +285,7 @@ public class EquipmentService {
         return serialNumber == null || serialNumber.isBlank() ? null : serialNumber.trim();
     }
  
-    static YearMonth parseMonth(String text) {
+    public static YearMonth parseMonth(String text) {
         if (text == null || text.isBlank()) {
             return null;
         }

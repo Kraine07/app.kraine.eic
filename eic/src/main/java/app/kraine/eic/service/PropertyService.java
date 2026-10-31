@@ -90,7 +90,7 @@ public class PropertyService {
      */
     @Transactional(readOnly = true)
     public List<Option> editorOptions(Long currentEditorId) {
-        List<User> editors = new ArrayList<>(userRepository.findActiveByRoleRoleType(RoleType.EDITOR));
+        List<User> editors = new ArrayList<>(userRepository.findActiveByRoleType(RoleType.EDITOR));
         if (currentEditorId != null && editors.stream().noneMatch(u -> currentEditorId.equals(u.getId()))) {
             userRepository.findById(currentEditorId).ifPresent(editors::add);
         }

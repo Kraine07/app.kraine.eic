@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.Writer;
 import java.util.List;
 
+import app.kraine.eic.config.Csv;
+
 /** UA-28: the audit export. Every value is quoted, and values that a spreadsheet would run as a formula are defused. */
 public final class AuditCsv {
 
@@ -28,12 +30,16 @@ public final class AuditCsv {
         writer.flush();
     }
 
-    public static String cell(String value) {
-        String text = value == null ? "" : value;
-        // A cell that starts with = + - @ is run as a formula by Excel and others (CSV injection).
-        if (!text.isEmpty() && "=+-@\t\r".indexOf(text.charAt(0)) >= 0) {
-            text = "'" + text;
-        }
-        return "\"" + text.replace("\"", "\"\"") + "\"";
+    static String cell(String value) {
+        return Csv.cell(value);
     }
+
+    // public static String cell(String value) {
+    //     String text = value == null ? "" : value;
+    //     // A cell that starts with = + - @ is run as a formula by Excel and others (CSV injection).
+    //     if (!text.isEmpty() && "=+-@\t\r".indexOf(text.charAt(0)) >= 0) {
+    //         text = "'" + text;
+    //     }
+    //     return "\"" + text.replace("\"", "\"\"") + "\"";
+    // }
 }

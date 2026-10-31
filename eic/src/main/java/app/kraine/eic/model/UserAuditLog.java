@@ -16,7 +16,7 @@ import lombok.Setter;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
+// @Entity
 public class UserAuditLog {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)

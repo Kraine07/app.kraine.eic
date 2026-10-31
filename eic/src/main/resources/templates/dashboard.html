@@ -73,11 +73,13 @@
   </a>
 
   <nav aria-label="Main" style="display:flex; gap:1.25rem;">
+    <a th:href="@{/users}" th:if="${authUser.authorities.![authority].contains('ROLE_ADMINISTRATOR')}">Users</a>
+    <a th:href="@{/properties}"  th:if="${authUser.authorities.![authority].contains('ROLE_ADMINISTRATOR')}">Property</a>
+    <a th:href="@{/locations}"  th:unless="${authUser.authorities.![authority].contains('ROLE_ADMINISTRATOR')}">Location</a>
+    <a th:href="@{/manufacturers}"  th:if="${authUser.authorities.![authority].contains('ROLE_ADMINISTRATOR')}">Manufacturer</a>
     <a th:href="@{/equipment}">Equipment</a>
-    <a th:href="@{/properties}">Property</a>
-    <a th:href="@{/manufacturers}">Manufacturer</a>
-    <a th:href="@{/users}">Users</a>
-    <a th:href="@{/audit}">Audit</a>
+    <a th:href="@{/reports}">Report</a>
+    <a th:href="@{/audit}"  th:if="${authUser.authorities.![authority].contains('ROLE_ADMINISTRATOR')}">Audit</a>
   <form th:action="@{/logout}" method="post">
     <button type="submit" class="linklike">
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-round preview-icon"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>

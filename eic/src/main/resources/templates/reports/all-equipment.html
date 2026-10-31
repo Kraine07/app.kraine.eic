@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>All Equipment report</title>
+  <style th:replace="~{dashboard :: styles}"></style>
+  <style>
+    .chooser { display: flex; gap: .75rem; align-items: center; flex-wrap: wrap; background: #fff;
+              border: 1px solid var(--line); border-radius: 6px; padding: 1rem; margin-bottom: 1.5rem; }
+    .chooser p { margin: 0; flex: 1; min-width: 16rem; }
+    .report-head { display: flex; justify-content: space-between; align-items: baseline; gap: 1rem; flex-wrap: wrap; }
+    .meta { color: var(--muted); font-size: .9rem; margin: 0 0 .75rem; }
+  </style>
+</head>
+<body>
+<header th:replace="~{dashboard :: topbar}"></header>
+
+<main>
+  <div class="page-head">
+    <h1>All Equipment</h1>
+    <a class="button secondary" th:href="@{/reports}">All reports</a>
+  </div>
+
+  <form class="chooser" method="get" th:action="@{/reports/all-equipment}">
+    <p>Every item you can see, with its model, property and location.</p>
+    <button type="submit" name="generate" value="true">Generate</button>
+  </form>
+
+  <section th:if="${report != null}" aria-labelledby="reportTitle">
+    <div class="report-head">
+      <h2 id="reportTitle" style="margin:0 0 .25rem">All equipment</h2>
+      <p class="meta">
+        <span th:text="${#lists.size(report.rows())}">0</span> item(s). Generated <span th:text="${report.generatedAt()}">2026-10-24 12:00:00 UTC</span>.
+      </p>
+    </div>
+    <p th:unless="${#lists.isEmpty(report.rows())}" style="margin:0 0 1rem">
+      <a class="button secondary" th:href="@{/reports/all-equipment.csv}">Export</a>
+    </p>
+    <p class="meta" th:if="${report.restricted()}">
+      Showing only the equipment at your properties.
+    </p>
+
+    <p th:if="${#lists.isEmpty(report.rows())}">There is no equipment to report.</p>
+
+    <div class="table-wrap" th:unless="${#lists.isEmpty(report.rows())}">
+      <table>
+        <thead>
+          <tr><th>Serial number</th><th>Manufacturer</th><th>Model</th><th>Manufactured</th><th>Property</th><th>Location</th></tr>
+        </thead>
+        <tbody>
+          <tr th:each="e : ${report.rows()}">
+            <td th:text="${e.serialNumber() != null} ? ${e.serialNumber()} : 'Not set'">SN-1001</td>
+            <td th:text="${e.manufacturerName()}">Acme</td>
+            <td th:text="${e.modelDescription()}">X100</td>
+            <td th:text="${e.manufacturedDate() != null} ? ${e.manufacturedDate()} : ''">2020-05</td>
+            <td th:text="${e.propertyName()}">North Site</td>
+            <td th:text="${e.locationName()}">Store</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</main>
+</body>
+</html>
