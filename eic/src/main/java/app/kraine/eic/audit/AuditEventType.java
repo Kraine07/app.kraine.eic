@@ -20,6 +20,10 @@ public enum AuditEventType {
     EQUIPMENT_UPDATED("Equipment updated"),
     EQUIPMENT_DELETED("Equipment deleted"),
 
+    REGION_CREATED("Region created"),
+    REGION_UPDATED("Region updated"),
+    REGION_DELETED("Region deleted"),
+
     PROPERTY_CREATED("Property created"),
     PROPERTY_UPDATED("Property updated"),
     PROPERTY_DELETED("Property deleted"),
@@ -34,7 +38,9 @@ public enum AuditEventType {
 
     MODEL_CREATED("Model created"),
     MODEL_UPDATED("Model updated"),
-    MODEL_DELETED("Model deleted");
+    MODEL_DELETED("Model deleted"),
+
+    CATEGORY_CREATED("Category created");
 
     private final String label;
 

@@ -14,7 +14,10 @@ public interface PropertyRepoInterface extends JpaRepository<Property, Long> {
 
     boolean existsByNameIgnoreCase(String name);
     boolean existsByNameIgnoreCaseAndIdNot(String name, Long id);
-    boolean existsByUserId(Long userId);            // already needed by PropertyUserLinks
+    boolean existsByUserId(Long userId);
+
+    
+    boolean existsByRegionId(Long regionId);
 
     // UserRepoInterface
     @Query("SELECT u FROM User u WHERE u.role.roleType = :roleType AND u.isSuspended = false "
