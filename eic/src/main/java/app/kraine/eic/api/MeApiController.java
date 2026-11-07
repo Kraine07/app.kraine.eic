@@ -1,4 +1,4 @@
-package app.kraine.eic.controller;
+package app.kraine.eic.api;
 
 
 import org.springframework.security.core.Authentication;
