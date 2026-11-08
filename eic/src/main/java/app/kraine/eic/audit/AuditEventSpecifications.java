@@ -4,6 +4,8 @@ import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.StringUtils;
 
+import app.kraine.eic.model.AuditEvent;
+
 import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;

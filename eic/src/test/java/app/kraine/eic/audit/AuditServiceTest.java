@@ -13,6 +13,8 @@ import org.springframework.transaction.PlatformTransactionManager;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
 
+import app.kraine.eic.model.AuditEvent;
+
 import java.time.Duration;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;

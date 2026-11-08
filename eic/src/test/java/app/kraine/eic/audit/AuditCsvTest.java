@@ -2,6 +2,8 @@ package app.kraine.eic.audit;
 
 import org.junit.jupiter.api.Test;
 
+import app.kraine.eic.model.AuditEvent;
+
 import java.io.StringWriter;
 import java.time.Instant;
 import java.util.List;

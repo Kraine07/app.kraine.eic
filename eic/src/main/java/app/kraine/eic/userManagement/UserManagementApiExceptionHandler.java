@@ -1,4 +1,4 @@
-package app.kraine.eic.api;
+package app.kraine.eic.userManagement;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ProblemDetail;
@@ -8,6 +8,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import app.kraine.eic.api.UserManagementApiController;
 import app.kraine.eic.exception.DuplicateEmailException;
 import app.kraine.eic.exception.EmailDeliveryException;
 import app.kraine.eic.exception.FieldValidationException;

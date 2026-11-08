@@ -5,6 +5,7 @@ import java.io.Writer;
 import java.util.List;
 
 import app.kraine.eic.config.Csv;
+import app.kraine.eic.model.AuditEvent;
 
 /** UA-28: the audit export. Every value is quoted, and values that a spreadsheet would run as a formula are defused. */
 public final class AuditCsv {

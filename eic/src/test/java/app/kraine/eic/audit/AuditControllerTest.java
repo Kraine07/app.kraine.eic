@@ -1,6 +1,8 @@
 package app.kraine.eic.audit;
 
 import app.kraine.eic.audit.AuditViews.AuditPageView;
+import app.kraine.eic.model.AuditEvent;
+
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;

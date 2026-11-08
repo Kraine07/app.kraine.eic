@@ -6,6 +6,8 @@ import java.time.ZoneOffset;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+import app.kraine.eic.model.AuditEvent;
+
 /** Read-only data for the audit page. Templates call the accessors, e.g. row.time(). */
 public final class AuditViews {
 

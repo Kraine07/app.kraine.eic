@@ -8,6 +8,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import app.kraine.eic.api.SetupApiController;
 import app.kraine.eic.exception.SetupAlreadyCompletedException;
 
 import java.util.LinkedHashMap;

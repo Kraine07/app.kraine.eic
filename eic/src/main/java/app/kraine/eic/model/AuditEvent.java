@@ -1,4 +1,4 @@
-package app.kraine.eic.audit;
+package app.kraine.eic.model;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
@@ -14,6 +14,8 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 import java.time.Instant;
+
+import app.kraine.eic.audit.AuditEventType;
 
 /**
  * One row of the audit trail. Every column is updatable = false: once written, an event is never

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import app.kraine.eic.audit.AuditViews.AuditPageView;
 import app.kraine.eic.audit.AuditViews.AuditRow;
 import app.kraine.eic.audit.AuditViews.TypeOption;
+import app.kraine.eic.model.AuditEvent;
 
 import java.io.IOException;
 import java.time.LocalDate;
