@@ -80,13 +80,15 @@
     <a th:href="@{/equipment}">Equipment</a>
     <a th:href="@{/reports}">Report</a>
     <a th:href="@{/audit}"  th:if="${authUser.authorities.![authority].contains('ROLE_ADMINISTRATOR')}">Audit</a>
-  <form th:action="@{/logout}" method="post">
-    <button type="submit" class="linklike">
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-round preview-icon"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>
-      <span th:text="${authUser.firstName}"></span>
-    </button>
-  </form>
+
   </nav>
+    <a th:href="@{/privacy}">Privacy</a>
+    <form th:action="@{/logout}" method="post">
+        <button type="submit" class="linklike">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-user-round preview-icon"><circle cx="12" cy="8" r="5"/><path d="M20 21a8 8 0 0 0-16 0"/></svg>
+            <span th:text="${authUser.firstName}"></span>
+        </button>
+    </form>
 </header>
 
 <section class="welcome">

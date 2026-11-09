@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Privacy policy</title>
+  <style th:replace="~{dashboard :: styles}"></style>
+  <style>
+    .brandbar { padding: .75rem 1.5rem; background: #fff; border-bottom: 1px solid var(--line); font-weight: 700; }
+    main.policy { max-width: 48rem; line-height: 1.6; }
+    main.policy h2 { margin: 2.25rem 0 .5rem; font-size: 1.25rem; }
+    main.policy p, main.policy li { margin: 0 0 .75rem; }
+    main.policy ul { padding-left: 1.25rem; margin: 0 0 1rem; }
+    main.policy .updated { color: var(--muted); }
+    main.policy .summary { background: #fff; border: 1px solid var(--line); border-radius: 6px; padding: 1rem 1.25rem; }
+    main.policy nav.toc { margin: 1.5rem 0; }
+    main.policy nav.toc ol { margin: .5rem 0 0; padding-left: 1.25rem; columns: 2; column-gap: 2rem; }
+    main.policy nav.toc li { margin: 0 0 .25rem; break-inside: avoid; }
+    main.policy table td, main.policy table th { vertical-align: top; }
+    .placeholder { background: #fff3a8; padding: 0 .25rem; border-radius: 3px; }
+    @media (max-width: 40rem) { main.policy nav.toc ol { columns: 1; } }
+    @media print { .brandbar, nav.toc { display: none; } }
+  </style>
+</head>
+<body>
+<div class="brandbar">Equipment Inventory</div>
+
+<main class="policy">
+  <h1>Privacy policy</h1>
+  <p class="updated">
+    Effective <span th:text="${effectiveDate}" th:classappend="${#strings.startsWith(effectiveDate, '[')} ? 'placeholder'">1 November 2026</span>
+  </p>
+
+  <div class="summary">
+    <p style="margin:0">
+      Equipment Inventory is a work tool for keeping track of equipment. It holds the details of the people who use it,
+      a record of what they do in it, and information about the equipment itself. We use that information to run the
+      system and keep it secure. We do not sell it, and the system does not use advertising or tracking.
+    </p>
+  </div>
+
+  <nav class="toc" aria-label="On this page">
+    <strong>On this page</strong>
+    <ol>
+      <li><a href="#who">Who is responsible</a></li>
+      <li><a href="#collect">What we collect and why</a></li>
+      <li><a href="#cookies">Cookies and the mobile app</a></li>
+      <li><a href="#share">Who can see your information</a></li>
+      <li><a href="#keep">How long we keep it</a></li>
+      <li><a href="#protect">How we protect it</a></li>
+      <li><a href="#rights">Your rights</a></li>
+      <li><a href="#changes">Changes and contact</a></li>
+    </ol>
+  </nav>
+
+  <h2 id="who">1. Who is responsible</h2>
+  <p>
+    <span th:text="${organization}" th:classappend="${#strings.startsWith(organization, '[')} ? 'placeholder'">Organization name</span>
+    runs this system and decides how personal information in it is used. In this policy, &ldquo;we&rdquo; means that organisation.
+    Questions about privacy go to
+    <a th:href="'mailto:' + ${contactEmail}" th:text="${contactEmail}"
+       th:classappend="${#strings.startsWith(contactEmail, '[')} ? 'placeholder'">privacy@example.org</a>.
+  </p>
+
+  <h2 id="collect">2. What we collect and why</h2>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th scope="col">Information</th><th scope="col">What it includes</th><th scope="col">Why we use it</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">Your account</th>
+          <td>
+            First name, last name, email address, your role (Administrator or Editor), whether the account is active or
+            suspended, whether your password is temporary, and how many sign-in attempts have failed in a row.
+            Your password is stored only in scrambled (hashed) form, so nobody can read it.
+          </td>
+          <td>To create your account, sign you in and control what you are allowed to do.</td>
+        </tr>
+        <tr>
+          <th scope="row">Activity records</th>
+          <td>
+            The date and time, the kind of event (such as signing in, a failed sign-in, signing out, a password change,
+            or an account or equipment change), who did it, which account or item it affected, the IP address, and a
+            short note.
+          </td>
+          <td>To keep the system secure, to find misuse, and to show who changed what.</td>
+        </tr>
+        <tr>
+          <th scope="row">Equipment records</th>
+          <td>
+            Serial numbers, manufacturers and models, manufactured month, the property, location and region where each
+            item is, and which Editor looks after each property.
+          </td>
+          <td>To run the inventory and produce reports.</td>
+        </tr>
+        <tr>
+          <th scope="row">Photos of equipment</th>
+          <td>Image files that people upload for an item, with the file name.</td>
+          <td>To help recognise the equipment. Please do not upload photos that show people.</td>
+        </tr>
+        <tr>
+          <th scope="row">Reports and downloads</th>
+          <td>Lists of equipment that you generate and, if you choose, download as a CSV file.</td>
+          <td>To let you analyse the inventory. Reports show only what you are allowed to see.</td>
+        </tr>
+        <tr>
+          <th scope="row">Emails we send you</th>
+          <td>When an Administrator creates or reactivates your account, an email with a temporary password.</td>
+          <td>To let you sign in for the first time. You are asked to choose your own password straight away.</td>
+        </tr>
+        <tr>
+          <th scope="row">Technical records</th>
+          <td>Server logs that can include your email address and what went wrong when an error occurs.</td>
+          <td>To keep the system running and fix problems.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2 id="cookies">3. Cookies and the mobile app</h2>
+  <p>The website uses only the cookies it needs to work:</p>
+  <ul>
+    <li>A <strong>session cookie</strong> that keeps you signed in. You are signed out after
+      <strong th:text="${sessionMinutes}">10</strong> minutes of inactivity.</li>
+    <li>A <strong>security token</strong> inside forms, which protects them from being sent by another website on your behalf.</li>
+  </ul>
+  <p>
+    We do not use advertising, analytics or tracking cookies, and we do not load anything from other companies&rsquo;
+    websites on these pages.
+  </p>
+  <p>
+    The mobile app keeps your password in memory only while the app is open and asks for it again when you sign in
+    next time. It uses the camera or photo library only when you choose to add a picture to an item.
+  </p>
+
+  <h2 id="share">4. Who can see your information</h2>
+  <ul>
+    <li><strong>Administrators</strong> can see every account, the activity records and all equipment.</li>
+    <li><strong>Editors</strong> can see and manage the equipment at the properties assigned to them, and their own account.</li>
+    <li>Other people who use the system see only your name where it appears with a property or an equipment report.</li>
+    <li>
+      We do not sell personal information. It is shared only with the services that run the system for us, such as hosting and
+      email, and only so they can provide that service. The data is hosted in
+      <span th:text="${hostingLocation}" th:classappend="${#strings.startsWith(hostingLocation, '[')} ? 'placeholder'">Kingston, Jamaica</span>.
+    </li>
+    <li>We will disclose information if the law requires it.</li>
+  </ul>
+
+  <h2 id="keep">5. How long we keep it</h2>
+  <ul>
+    <li><strong>Accounts</strong> are kept until an Administrator deletes them.</li>
+    <li>
+      <strong>Activity records</strong> are kept for at least <strong th:text="${retentionDays}">365</strong> days and then
+      deleted automatically. Because of this, a record can still mention your email address for that long after your
+      account has been deleted.
+    </li>
+    <li><strong>Equipment records and photos</strong> are kept until an Administrator or the responsible Editor deletes the
+      item. A photo is deleted with its item.</li>
+    <li><strong>Technical records</strong> are kept only as long as needed to keep the system secure and working.</li>
+  </ul>
+
+  <h2 id="protect">6. How we protect it</h2>
+  <ul>
+    <li>Passwords are stored in hashed form, and temporary passwords must be changed at first sign-in.</li>
+    <li>What you can see and do depends on your role. Editors cannot reach equipment at other people&rsquo;s properties.</li>
+    <li>An account is suspended after 5 failed sign-in attempts in a row.</li>
+    <li>You are signed out after <span th:text="${sessionMinutes}">10</span> minutes of inactivity.</li>
+    <li>The system is meant to be used over an encrypted (HTTPS) connection.</li>
+    <li>Every sign-in and every change to accounts and equipment is recorded.</li>
+  </ul>
+  <p>No system is perfectly secure. If something happens that puts your information at risk, we will tell you as the law requires.</p>
+
+  <h2 id="rights">7. Your rights</h2>
+  <p>You can ask us to:</p>
+  <ul>
+    <li>tell you what personal information we hold about you and give you a copy;</li>
+    <li>correct information that is wrong. An Administrator can change your name and email address;</li>
+    <li>delete your account, subject to the activity records described in section 5;</li>
+    <li>stop using your information in ways you object to, where the law allows.</li>
+  </ul>
+  <p>
+    Write to <a th:href="'mailto:' + ${contactEmail}" th:text="${contactEmail}"
+       th:classappend="${#strings.startsWith(contactEmail, '[')} ? 'placeholder'">privacy@example.org</a>.
+    If you are not satisfied with our answer, you can complain to the data protection authority in your country.
+  </p>
+  <p>This system is for staff and other authorised users. It is not meant for anyone under 18.</p>
+
+  <h2 id="changes">8. Changes and contact</h2>
+  <p>
+    If we change how we use personal information, we will update this page and its effective date. Questions about this
+    policy go to
+    <a th:href="'mailto:' + ${contactEmail}" th:text="${contactEmail}"
+       th:classappend="${#strings.startsWith(contactEmail, '[')} ? 'placeholder'">privacy@example.org</a>.
+  </p>
+
+  <p style="margin-top:2rem"><a class="button secondary" th:href="@{/equipment}">Back to Equipment Inventory</a></p>
+</main>
+</body>
+</html>
