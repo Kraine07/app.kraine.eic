@@ -1,6 +1,6 @@
 package app.kraine.eic.equipmentManagement;
 
-import app.kraine.eic.controller.EquipmentImageApiController;
+import app.kraine.eic.api.EquipmentImageApiController;
 import app.kraine.eic.exception.EquipmentImageAlreadyExistsException;
 import app.kraine.eic.exception.EquipmentNotFoundException;
 import app.kraine.eic.exception.InvalidImageException;

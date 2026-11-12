@@ -96,7 +96,7 @@ public class AuditController {
 
 
     /** Dates left empty default to the last 30 days. */
-    private static AuditFilter filterOf(LocalDate from, LocalDate to, AuditEventType type, String email) {
+    public static AuditFilter filterOf(LocalDate from, LocalDate to, AuditEventType type, String email) {
         LocalDate effectiveTo = to != null ? to : LocalDate.now(ZoneOffset.UTC);
         LocalDate effectiveFrom = from != null ? from : effectiveTo.minusDays(DEFAULT_DAYS);
         return new AuditFilter(effectiveFrom, effectiveTo, type, email == null ? "" : email.trim());
@@ -104,7 +104,7 @@ public class AuditController {
 
 
 
-    private static List<TypeOption> typeOptions() {
+    public static List<TypeOption> typeOptions() {
         return Arrays.stream(AuditEventType.values()).map(t -> new TypeOption(t.name(), t.getLabel())).toList();
     }
 }

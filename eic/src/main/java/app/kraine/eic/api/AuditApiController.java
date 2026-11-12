@@ -1,5 +1,9 @@
-package app.kraine.eic.audit;
+package app.kraine.eic.api;
 
+import app.kraine.eic.audit.AuditController;
+import app.kraine.eic.audit.AuditEventType;
+import app.kraine.eic.audit.AuditFilter;
+import app.kraine.eic.audit.AuditService;
 import app.kraine.eic.exception.InvalidAuditRangeException;
 import app.kraine.eic.model.AuditEvent;
 import app.kraine.eic.audit.AuditViews.AuditRow;

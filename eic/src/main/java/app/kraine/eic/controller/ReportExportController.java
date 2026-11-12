@@ -94,12 +94,12 @@ public class ReportExportController {
     }
 
     /** For example equipment-editor-ana-silva-2026-10-24.csv. Only letters, digits and hyphens, so it is safe in a header. */
-    static String fileName(String kind, String subject) {
+    public static String fileName(String kind, String subject) {
         return "equipment-" + kind + (subject == null ? "" : "-" + slug(subject))
                 + "-" + LocalDate.now(ZoneOffset.UTC) + ".csv";
     }
 
-    static String slug(String text) {
+    public static String slug(String text) {
         String ascii = Normalizer.normalize(text, Normalizer.Form.NFD).replaceAll("\\p{M}+", "");
         String slug = ascii.toLowerCase(Locale.ROOT).replaceAll("[^a-z0-9]+", "-").replaceAll("^-+|-+$", "");
         if (slug.length() > 40) {
